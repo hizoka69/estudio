@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCG Study - Mi Mazo</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --primary: #ffcb05; 
+            --primary-dark: #c7a008;
+            --accent: #3b4cca; 
+            --text-light: #ffffff;
+            --text-dark: #333333;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; overflow-x: hidden;
+        }
+
+        h1 { color: var(--primary); text-shadow: 2px 2px 4px rgba(0,0,0,0.5); text-align: center; }
+        
+        input[type="text"] {
+            width: 100%; padding: 12px; font-size: 1rem; border: 2px solid #555;
+            border-radius: 8px; margin-bottom: 10px; background: #222; color: white;
+            transition: border-color 0.3s; box-sizing: border-box;
+        }
+        input:focus { outline: none; border-color: var(--primary); }
+
+        button {
+            background: var(--primary); color: var(--text-dark); border: none;
+            padding: 10px 15px; font-size: 1rem; font-weight: bold; border-radius: 8px;
+            cursor: pointer; transition: transform 0.1s, background 0.2s; margin: 5px;
+        }
+        button:hover { background: var(--primary-dark); }
+        button:active { transform: scale(0.95); }
+        button:disabled { background: #555; color: #888; cursor: not-allowed; }
+
+        /* Pantallas */
+        .pantalla { display: none; flex-direction: column; align-items: center; width: 100%; max-width: 800px; }
+        .pantalla.activa { display: flex; animation: fadeIn 0.4s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Creador de mazo */
+        .panel-creador {
+            background: var(--card-bg); padding: 25px; border-radius: 15px;
+            border: 2px solid var(--accent); width: 100%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        /* --- CONTROLES MINIMALISTAS --- */
+        .mini-controles {
+            display: flex; justify-content: center; gap: 15px; margin-top: 15px; font-size: 0.9rem; color: #888;
+        }
+        .mini-btn {
+            background: none; color: #aaa; border: 1px solid #444; padding: 5px 10px; border-radius: 5px; cursor: pointer; transition: all 0.2s; font-size: 0.8rem;
+        }
+        .mini-btn:hover { background: #333; color: white; border-color: var(--primary); }
+        input[type="file"] { display: none; }
+
+        /* Sobre Animado */
+        .contenedor-sobre { perspective: 1000px; margin-top: 50px; cursor: pointer; }
+        .sobre {
+            width: 240px; height: 340px; background: linear-gradient(135deg, var(--accent), #1a237e);
+            border: 5px solid var(--primary); border-radius: 20px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
+            position: relative; overflow: hidden;
+        }
+        .sobre::before {
+            content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg); animation: brillo 3s infinite;
+        }
+        @keyframes brillo { 0% { transform: translateX(-100%) rotate(45deg); } 100% { transform: translateX(100%) rotate(45deg); } }
+        .sobre:hover { transform: translateY(-15px) scale(1.05) rotateX(10deg); box-shadow: 0 25px 50px rgba(59, 76, 202, 0.8); }
+        .sobre h2 { color: var(--primary); font-size: 2rem; text-shadow: 2px 2px 4px #000; margin: 0; z-index: 1;}
+        .sobre p { color: white; font-weight: bold; z-index: 1;}
+
+        /* Cartas */
+        .grid-cartas { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; width: 100%; margin-top: 20px; }
+        .carta {
+            height: 200px; background: linear-gradient(135deg, #444, #222);
+            border: 3px solid #666; border-radius: 12px; cursor: pointer; display: flex; justify-content: center; align-items: center;
+            font-weight: bold; font-size: 3rem; color: #555; box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+            opacity: 0; transform: translateY(50px) rotateY(90deg);
+            animation: cartaAparece 0.6s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        @keyframes cartaAparece { to { opacity: 1; transform: translateY(0) rotateY(0); } }
+        .carta:hover { transform: translateY(-8px); border-color: var(--primary); }
+        .carta.respondida { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-color: #fff; color: var(--text-dark); pointer-events: none;}
+
+        /* Modal */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(5px); }
+        .modal-content { background: var(--card-bg); padding: 30px; border-radius: 15px; border: 3px solid var(--primary); width: 90%; max-width: 500px; text-align: center; transform: scale(0.8); animation: popModal 0.3s forwards; }
+        @keyframes popModal { to { transform: scale(1); } }
+
+        /* Resultados */
+        .resultado-item { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; background: #2a2a2a; display: flex; flex-direction: column; text-align: left; box-sizing: border-box;}
+        .correcto { border-left: 6px solid var(--success); }
+        .incorrecto { border-left: 6px solid var(--danger); }
+        #loading-groq { display: none; flex-direction: column; align-items: center; margin: 40px 0; }
+        .spinner { width: 50px; height: 50px; border: 5px solid rgba(255,203,5,0.3); border-radius: 50%; border-top-color: var(--primary); animation: spin 1s ease-in-out infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <h1>📚 TCG Study</h1>
+
+    <div id="pantalla-creador" class="pantalla activa">
+        <div class="panel-creador">
+            <h2>1. Forja tus cartas</h2>
+            <input type="text" id="nueva-pregunta" placeholder="Ej: ¿Qué hace el comando SELECT en SQL?">
+            <input type="text" id="nueva-respuesta" placeholder="Ej: Recupera datos de una base de datos.">
+            <button onclick="agregarCarta()">➕ Agregar Carta</button>
+            
+            <h3 style="margin-top: 15px;">Cartas en tu mazo: <span id="contador-cartas" style="color: var(--primary);">0</span></h3>
+            
+            <div class="mini-controles">
+                <button class="mini-btn" onclick="document.getElementById('archivo-importar').click()">📥 Importar</button>
+                <input type="file" id="archivo-importar" accept=".json">
+                <button class="mini-btn" onclick="exportarMazo()">📤 Exportar</button>
+                <button class="mini-btn" style="color: var(--danger); border-color: #522;" onclick="borrarMazo()">🗑️ Borrar</button>
+            </div>
+            
+            <hr style="border: 1px solid #333; margin: 20px 0;">
+            <button id="btn-ir-sobre" onclick="cambiarPantalla('pantalla-sobre')" disabled style="font-size: 1.2rem; padding: 15px; width: 100%;">🎁 Jugar Mazo</button>
+        </div>
+    </div>
+
+    <div id="pantalla-sobre" class="pantalla">
+        <h2>¡Tu Pack está listo!</h2>
+        <p style="color: #aaa;">Haz clic en el sobre para sacar tus cartas al azar.</p>
+        <div class="contenedor-sobre" onclick="abrirSobre()">
+            <div class="sobre">
+                <h2>PACK</h2>
+                <p>DE ESTUDIO</p>
+            </div>
+        </div>
+        <button class="mini-btn" onclick="cambiarPantalla('pantalla-creador')" style="margin-top: 40px;">← Volver al creador</button>
+    </div>
+
+    <div id="pantalla-juego" class="pantalla">
+        <h2>Toca las cartas para responder</h2>
+        <div class="grid-cartas" id="contenedor-cartas"></div>
+        <button id="btn-verificar" style="display: none; margin-top: 30px; font-size: 1.5rem; padding: 15px 30px;" onclick="verificarEnServidor()">🧠 Evaluar con IA</button>
+    </div>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <h3 id="modal-pregunta" style="color: var(--primary); margin-bottom: 20px; font-size: 1.5rem;"></h3>
+            <input type="text" id="input-respuesta" placeholder="Escribe lo que recuerdes..." onkeypress="if(event.key === 'Enter') guardarRespuesta()">
+            <div style="margin-top: 20px;">
+                <button onclick="guardarRespuesta()">Confirmar</button>
+                <button onclick="document.getElementById('modal').style.display='none'" style="background: #555; color: white;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pantalla-resultados" class="pantalla">
+        <div id="loading-groq">
+            <div class="spinner"></div>
+            <h3 style="color: var(--primary); margin-top: 15px;">Evaluando con IA...</h3>
+            <p style="color: #aaa;">Verificando conceptos de forma segura.</p>
+        </div>
+
+        <div id="contenido-resultados" style="display: none; width: 100%; text-align: center;">
+            <h2 id="titulo-resultado" style="font-size: 2.5rem; margin-bottom: 5px;"></h2>
+            <p id="subtitulo-resultado" style="color: #aaa; margin-bottom: 30px;"></p>
+            <div id="lista-resultados" style="width: 100%;"></div>
+            <button onclick="cambiarPantalla('pantalla-sobre')" style="margin-top: 20px; font-size: 1.2rem;">Jugar otro sobre</button>
+            <button onclick="cambiarPantalla('pantalla-creador')" style="margin-top: 20px; background: #555; color: white;">Volver al creador</button>
+        </div>
+    </div>
+
+    <script>
+        let miMazo = JSON.parse(localStorage.getItem('miMazoEstudio')) || [];
+        let cartasEnJuego = [];
+        let cartaActualIndex = null;
+
+        function cambiarPantalla(id) {
+            document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
+            document.getElementById(id).classList.add('activa');
+            if (id === 'pantalla-creador') actualizarUI();
+        }
+
+        function agregarCarta() {
+            const p = document.getElementById('nueva-pregunta');
+            const r = document.getElementById('nueva-respuesta');
+            if(!p.value.trim() || !r.value.trim()) return alert("Llena ambos campos.");
+            miMazo.push({ pregunta: p.value.trim(), respuesta: r.value.trim() });
+            localStorage.setItem('miMazoEstudio', JSON.stringify(miMazo));
+            p.value = ''; r.value = ''; p.focus();
+            actualizarUI();
+        }
+
+        function borrarMazo() {
+            if(confirm("¿Borrar todo?")) { miMazo = []; localStorage.removeItem('miMazoEstudio'); actualizarUI(); }
+        }
+
+        function actualizarUI() {
+            document.getElementById('contador-cartas').innerText = miMazo.length;
+            document.getElementById('btn-ir-sobre').disabled = miMazo.length < 1;
+        }
+
+        function exportarMazo() {
+            if(miMazo.length === 0) return alert("Mazo vacío.");
+            const a = document.createElement('a');
+            a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(miMazo, null, 4));
+            a.download = "mi_mazo_estudio.json"; a.click();
+        }
+
+        document.getElementById('archivo-importar').addEventListener('change', function(e) {
+            const file = e.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (Array.isArray(data)) { miMazo = data; localStorage.setItem('miMazoEstudio', JSON.stringify(miMazo)); actualizarUI(); }
+                } catch { alert("Error en el archivo."); }
+            }; reader.readAsText(file);
+        });
+
+        function abrirSobre() {
+            cambiarPantalla('pantalla-juego');
+            document.getElementById('btn-verificar').style.display = 'none';
+            const cont = document.getElementById('contenedor-cartas');
+            cont.innerHTML = '';
+            cartasEnJuego = [...miMazo].sort(() => Math.random() - 0.5).slice(0, 10);
+            
+            cartasEnJuego.forEach((carta, i) => {
+                const div = document.createElement('div');
+                div.className = 'carta'; div.innerHTML = '?'; div.style.animationDelay = `${i * 0.15}s`;
+                div.onclick = () => {
+                    cartaActualIndex = i;
+                    document.getElementById('modal-pregunta').innerText = carta.pregunta;
+                    document.getElementById('input-respuesta').value = carta.respuestaUsuario || '';
+                    document.getElementById('modal').style.display = 'flex';
+                    setTimeout(() => document.getElementById('input-respuesta').focus(), 100);
+                };
+                carta.elementoVisual = div; carta.respuestaUsuario = null; cont.appendChild(div);
+            });
+        }
+
+        function guardarRespuesta() {
+            const resp = document.getElementById('input-respuesta').value;
+            if (!resp.trim()) return;
+            cartasEnJuego[cartaActualIndex].respuestaUsuario = resp;
+            const div = cartasEnJuego[cartaActualIndex].elementoVisual;
+            div.classList.add('respondida'); div.innerHTML = '✓';
+            document.getElementById('modal').style.display = 'none';
+            if(cartasEnJuego.every(c => c.respuestaUsuario !== null)) document.getElementById('btn-verificar').style.display = 'block';
+        }
+
+        // --- CONEXIÓN SEGURA CON VERCEL ---
+        async function verificarEnServidor() {
+            cambiarPantalla('pantalla-resultados');
+            document.getElementById('loading-groq').style.display = 'flex';
+            document.getElementById('contenido-resultados').style.display = 'none';
+            const listaDiv = document.getElementById('lista-resultados'); listaDiv.innerHTML = '';
+
+            // Preparamos los datos para enviarlos limpios al backend
+            const payload = cartasEnJuego.map(c => ({
+                pregunta: c.pregunta, esperada: c.respuesta, usuario: c.respuestaUsuario, cartaOriginal: c
+            }));
+
+            try {
+                // Llamamos a la API oculta en Vercel
+                const response = await fetch('/api/evaluar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ evaluaciones: payload })
+                });
+                
+                const data = await response.json();
+                if(data.error) throw new Error(data.error);
+
+                let correctas = 0;
+                data.resultados.forEach(res => {
+                    if(res.esCorrecta) correctas++;
+                    const item = document.createElement('div');
+                    item.className = `resultado-item ${res.esCorrecta ? 'correcto' : 'incorrecto'}`;
+                    item.innerHTML = `
+                        <strong style="font-size: 1.1rem;">${res.carta.pregunta}</strong>
+                        <div style="margin-top: 5px;">
+                            <span style="color: #aaa;">Tú: </span><span style="color: ${res.esCorrecta ? 'var(--success)' : 'var(--danger)'};">${res.carta.respuestaUsuario}</span>
+                        </div>
+                        ${!res.esCorrecta ? `<div style="margin-top: 5px; color: #aaa; font-size: 0.9rem;">Era: <span style="color: white;">${res.carta.respuesta}</span></div>` : ''}
+                    `;
+                    listaDiv.appendChild(item);
+                });
+
+                const titulo = document.getElementById('titulo-resultado');
+                titulo.innerText = correctas === cartasEnJuego.length ? "¡PERFECTO! 🎉" : (correctas >= cartasEnJuego.length / 2 ? "¡BIEN HECHO! 👍" : "A REPASAR 📖");
+                titulo.style.color = correctas === cartasEnJuego.length ? 'var(--success)' : (correctas >= cartasEnJuego.length / 2 ? 'var(--primary)' : 'var(--danger)');
+                document.getElementById('subtitulo-resultado').innerText = `Puntuación: ${correctas} de ${cartasEnJuego.length}`;
+
+            } catch (error) {
+                listaDiv.innerHTML = `<div class="resultado-item incorrecto">❌ Ocurrió un error al contactar al servidor: ${error.message}</div>`;
+            }
+
+            document.getElementById('loading-groq').style.display = 'none';
+            document.getElementById('contenido-resultados').style.display = 'block';
+        }
+
+        actualizarUI();
+    </script>
+</body>
+</html>
