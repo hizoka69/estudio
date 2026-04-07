@@ -4,142 +4,273 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TCG Study - Mi Mazo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&display=swap');
+
         :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --primary: #ffcb05; 
+            --bg-color: #0d0d0f;
+            --card-bg: #16161a;
+            --surface: #1e1e26;
+            --primary: #ffcb05;
             --primary-dark: #c7a008;
-            --accent: #3b4cca; 
-            --text-light: #ffffff;
-            --text-dark: #333333;
-            --danger: #e74c3c;
-            --success: #2ecc71;
+            --accent: #3b4cca;
+            --accent2: #7c3aed;
+            --text-light: #f0f0f0;
+            --text-muted: #888;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --border: #2a2a35;
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
+            background-image: radial-gradient(ellipse at 20% 50%, rgba(59,76,202,0.07) 0%, transparent 60%),
+                              radial-gradient(ellipse at 80% 20%, rgba(255,203,5,0.05) 0%, transparent 50%);
             color: var(--text-light);
             display: flex; flex-direction: column; align-items: center;
-            min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; overflow-x: hidden;
+            min-height: 100vh; padding: 20px; overflow-x: hidden;
         }
 
-        h1 { color: var(--primary); text-shadow: 2px 2px 4px rgba(0,0,0,0.5); text-align: center; }
-        
-        input[type="text"] {
-            width: 100%; padding: 12px; font-size: 1rem; border: 2px solid #555;
-            border-radius: 8px; margin-bottom: 10px; background: #222; color: white;
-            transition: border-color 0.3s; box-sizing: border-box;
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem; letter-spacing: 4px;
+            background: linear-gradient(135deg, var(--primary), #ff8c00);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center; margin-bottom: 5px;
         }
-        input:focus { outline: none; border-color: var(--primary); }
+        .tagline { color: var(--text-muted); font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 30px; }
+
+        input[type="text"] {
+            width: 100%; padding: 12px 16px; font-size: 0.95rem; border: 1.5px solid var(--border);
+            border-radius: 10px; margin-bottom: 10px; background: var(--surface); color: white;
+            transition: border-color 0.2s, box-shadow 0.2s; font-family: 'Inter', sans-serif;
+        }
+        input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255,203,5,0.1); }
 
         button {
-            background: var(--primary); color: var(--text-dark); border: none;
-            padding: 10px 15px; font-size: 1rem; font-weight: bold; border-radius: 8px;
-            cursor: pointer; transition: transform 0.1s, background 0.2s; margin: 5px;
+            background: var(--primary); color: #111; border: none;
+            padding: 11px 18px; font-size: 0.9rem; font-weight: 700; border-radius: 10px;
+            cursor: pointer; transition: transform 0.1s, background 0.2s, box-shadow 0.2s; margin: 4px;
+            font-family: 'Inter', sans-serif;
         }
-        button:hover { background: var(--primary-dark); }
-        button:active { transform: scale(0.95); }
-        button:disabled { background: #555; color: #888; cursor: not-allowed; }
+        button:hover { background: var(--primary-dark); box-shadow: 0 4px 15px rgba(255,203,5,0.3); }
+        button:active { transform: scale(0.96); }
+        button:disabled { background: #2a2a35; color: #555; cursor: not-allowed; box-shadow: none; }
 
-        /* Pantallas */
-        .pantalla { display: none; flex-direction: column; align-items: center; width: 100%; max-width: 800px; }
-        .pantalla.activa { display: flex; animation: fadeIn 0.4s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .pantalla { display: none; flex-direction: column; align-items: center; width: 100%; max-width: 820px; }
+        .pantalla.activa { display: flex; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Creador de mazo */
+        /* Panel creador */
         .panel-creador {
-            background: var(--card-bg); padding: 25px; border-radius: 15px;
-            border: 2px solid var(--accent); width: 100%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            position: relative;
+            background: var(--card-bg); padding: 28px; border-radius: 18px;
+            border: 1.5px solid var(--border); width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
         }
+        .panel-creador h2 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; color: var(--primary); font-size: 1.6rem; margin-bottom: 20px; }
 
-        /* --- CONTROLES MINIMALISTAS --- */
-        .mini-controles {
-            display: flex; justify-content: center; gap: 15px; margin-top: 15px; font-size: 0.9rem; color: #888;
-        }
+        .mini-controles { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 16px; }
         .mini-btn {
-            background: none; color: #aaa; border: 1px solid #444; padding: 5px 10px; border-radius: 5px; cursor: pointer; transition: all 0.2s; font-size: 0.8rem;
+            background: var(--surface); color: #ccc; border: 1.5px solid var(--border);
+            padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 0.82rem;
+            font-family: 'Inter', sans-serif; font-weight: 600;
+            transition: all 0.2s;
         }
-        .mini-btn:hover { background: #333; color: white; border-color: var(--primary); }
+        .mini-btn:hover { background: #2a2a35; color: white; border-color: var(--primary); }
+        .mini-btn.danger { color: var(--danger); border-color: #3a1a1a; }
+        .mini-btn.danger:hover { background: #3a1a1a; border-color: var(--danger); }
         input[type="file"] { display: none; }
 
-        /* Sobre Animado */
-        .contenedor-sobre { perspective: 1000px; margin-top: 50px; cursor: pointer; }
+        hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+
+        /* Tutorial Modal */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.88); justify-content: center; align-items: center;
+            z-index: 200; backdrop-filter: blur(6px);
+        }
+        .modal-overlay.activo { display: flex; }
+        .modal-content {
+            background: var(--card-bg); padding: 32px; border-radius: 18px;
+            border: 2px solid var(--primary); width: 92%; max-width: 620px;
+            max-height: 85vh; overflow-y: auto;
+            animation: popModal 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards;
+        }
+        @keyframes popModal { from { transform: scale(0.85); opacity:0; } to { transform: scale(1); opacity:1; } }
+        .modal-content h2 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; color: var(--primary); font-size: 1.8rem; margin-bottom: 16px; }
+        .modal-content h3 { color: var(--primary); margin: 18px 0 8px; font-size: 1rem; }
+
+        /* Tutorial pasos */
+        .paso {
+            background: var(--surface); border-radius: 12px; padding: 16px 18px;
+            margin-bottom: 14px; border-left: 4px solid var(--accent);
+            position: relative;
+        }
+        .paso-num {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 26px; height: 26px; background: var(--accent); border-radius: 50%;
+            font-size: 0.8rem; font-weight: 700; margin-right: 10px; flex-shrink: 0;
+        }
+        .paso-titulo { display: flex; align-items: center; font-weight: 700; margin-bottom: 8px; }
+        .paso p { color: #bbb; font-size: 0.88rem; line-height: 1.6; margin-left: 36px; }
+
+        code {
+            background: #0d0d0f; color: var(--primary); padding: 2px 7px;
+            border-radius: 5px; font-size: 0.83rem; font-family: 'Courier New', monospace;
+        }
+        .code-block {
+            background: #0d0d0f; color: #a8ff78; padding: 14px; border-radius: 10px;
+            font-size: 0.78rem; font-family: 'Courier New', monospace; overflow-x: auto;
+            margin: 10px 0; border: 1px solid #2a2a35; white-space: pre; line-height: 1.6;
+        }
+        .tip {
+            background: rgba(255,203,5,0.08); border: 1px solid rgba(255,203,5,0.2);
+            border-radius: 10px; padding: 12px 16px; font-size: 0.85rem; color: #ddd;
+            margin-top: 14px;
+        }
+        .tip strong { color: var(--primary); }
+
+        /* Prompt copiable */
+        .prompt-box {
+            background: #0d0d0f; border: 1.5px solid var(--accent); border-radius: 10px;
+            padding: 14px; font-size: 0.78rem; color: #ccc; font-family: 'Courier New', monospace;
+            line-height: 1.6; white-space: pre-wrap; max-height: 200px; overflow-y: auto; margin: 10px 0;
+        }
+        .btn-copy {
+            background: var(--accent); color: white; border: none; padding: 6px 14px;
+            border-radius: 7px; cursor: pointer; font-size: 0.8rem; font-weight: 700;
+            font-family: 'Inter', sans-serif; margin-top: 6px; transition: background 0.2s;
+        }
+        .btn-copy:hover { background: #2f3da0; }
+
+        /* Sobre animado */
+        .contenedor-sobre { perspective: 1000px; margin-top: 40px; cursor: pointer; }
         .sobre {
-            width: 240px; height: 340px; background: linear-gradient(135deg, var(--accent), #1a237e);
-            border: 5px solid var(--primary); border-radius: 20px;
+            width: 230px; height: 320px;
+            background: linear-gradient(145deg, #1a237e, var(--accent), #311b92);
+            border: 4px solid var(--primary); border-radius: 18px;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
+            box-shadow: 0 20px 50px rgba(59,76,202,0.5);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
             position: relative; overflow: hidden;
         }
         .sobre::before {
             content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            transform: rotate(45deg); animation: brillo 3s infinite;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.08), transparent);
+            animation: brillo 3s infinite;
         }
         @keyframes brillo { 0% { transform: translateX(-100%) rotate(45deg); } 100% { transform: translateX(100%) rotate(45deg); } }
-        .sobre:hover { transform: translateY(-15px) scale(1.05) rotateX(10deg); box-shadow: 0 25px 50px rgba(59, 76, 202, 0.8); }
-        .sobre h2 { color: var(--primary); font-size: 2rem; text-shadow: 2px 2px 4px #000; margin: 0; z-index: 1;}
-        .sobre p { color: white; font-weight: bold; z-index: 1;}
+        .sobre:hover { transform: translateY(-18px) scale(1.06) rotateX(8deg); box-shadow: 0 35px 70px rgba(59,76,202,0.7); }
+        .sobre h2 { font-family: 'Bebas Neue', sans-serif; color: var(--primary); font-size: 2.5rem; letter-spacing: 4px; z-index: 1; }
+        .sobre p { color: rgba(255,255,255,0.7); font-size: 0.8rem; letter-spacing: 3px; font-weight: 600; z-index: 1; }
 
         /* Cartas */
-        .grid-cartas { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; width: 100%; margin-top: 20px; }
+        .grid-cartas { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 14px; width: 100%; margin-top: 20px; }
         .carta {
-            height: 200px; background: linear-gradient(135deg, #444, #222);
-            border: 3px solid #666; border-radius: 12px; cursor: pointer; display: flex; justify-content: center; align-items: center;
-            font-weight: bold; font-size: 3rem; color: #555; box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-            opacity: 0; transform: translateY(50px) rotateY(90deg);
-            animation: cartaAparece 0.6s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transition: transform 0.3s, border-color 0.3s;
+            height: 185px; background: linear-gradient(145deg, #1e1e26, #16161a);
+            border: 2px solid #2a2a35; border-radius: 14px; cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 2.5rem; box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+            opacity: 0; transform: translateY(40px) rotateY(90deg);
+            animation: cartaAparece 0.5s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
         }
         @keyframes cartaAparece { to { opacity: 1; transform: translateY(0) rotateY(0); } }
-        .carta:hover { transform: translateY(-8px); border-color: var(--primary); }
-        .carta.respondida { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-color: #fff; color: var(--text-dark); pointer-events: none;}
+        .carta:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: 0 16px 40px rgba(255,203,5,0.2); }
+        .carta.respondida { background: linear-gradient(145deg, #1a3a1a, #0d2010); border-color: var(--success); font-size: 2rem; }
 
-        /* Modal */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(5px); }
-        .modal-content { background: var(--card-bg); padding: 30px; border-radius: 15px; border: 3px solid var(--primary); width: 90%; max-width: 500px; text-align: center; transform: scale(0.8); animation: popModal 0.3s forwards; }
-        @keyframes popModal { to { transform: scale(1); } }
+        /* Modal respuesta */
+        .modal-resp { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.88); justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(5px); }
+        .modal-resp-content {
+            background: var(--card-bg); padding: 30px; border-radius: 18px;
+            border: 2px solid var(--primary); width: 90%; max-width: 500px; text-align: center;
+            animation: popModal 0.3s forwards;
+        }
+        .modal-resp-content h3 { color: var(--primary); margin-bottom: 16px; font-size: 1.2rem; line-height: 1.5; }
 
         /* Resultados */
-        .resultado-item { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; background: #2a2a2a; display: flex; flex-direction: column; text-align: left; box-sizing: border-box;}
-        .correcto { border-left: 6px solid var(--success); }
-        .incorrecto { border-left: 6px solid var(--danger); }
-        #loading-groq { display: none; flex-direction: column; align-items: center; margin: 40px 0; }
-        .spinner { width: 50px; height: 50px; border: 5px solid rgba(255,203,5,0.3); border-radius: 50%; border-top-color: var(--primary); animation: spin 1s ease-in-out infinite; }
+        .resultado-item {
+            width: 100%; padding: 18px; margin-bottom: 14px; border-radius: 12px;
+            background: var(--surface); display: flex; flex-direction: column;
+            text-align: left; border: 1.5px solid var(--border);
+        }
+        .correcto { border-left: 5px solid var(--success); border-color: var(--border); }
+        .incorrecto { border-left: 5px solid var(--danger); border-color: var(--border); }
+        .resultado-item .etiqueta { font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+        .correcto .etiqueta { color: var(--success); }
+        .incorrecto .etiqueta { color: var(--danger); }
+
+        #loading-groq { display: none; flex-direction: column; align-items: center; margin: 60px 0; }
+        .spinner {
+            width: 52px; height: 52px; border: 4px solid rgba(255,203,5,0.15);
+            border-radius: 50%; border-top-color: var(--primary);
+            animation: spin 0.9s ease-in-out infinite;
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Botón PDF */
+        .btn-pdf {
+            background: linear-gradient(135deg, #1a237e, var(--accent));
+            color: white; border: 2px solid rgba(255,255,255,0.15);
+            padding: 14px 28px; font-size: 1rem; border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(59,76,202,0.4);
+        }
+        .btn-pdf:hover { background: linear-gradient(135deg, #2535a0, #4a5cf0); box-shadow: 0 12px 35px rgba(59,76,202,0.6); }
+
+        .score-badge {
+            font-family: 'Bebas Neue', sans-serif; font-size: 5rem;
+            line-height: 1; letter-spacing: 2px;
+        }
+        .botones-resultado { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 24px; }
+
+        .badge-info {
+            display: inline-block; background: var(--surface); border: 1px solid var(--border);
+            border-radius: 20px; padding: 4px 12px; font-size: 0.78rem; color: var(--text-muted);
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
 
-    <h1>📚 TCG Study</h1>
+    <h1>📚 TCG STUDY</h1>
+    <p class="tagline">Memoriza como un campeón</p>
 
+    <!-- ===== PANTALLA CREADOR ===== -->
     <div id="pantalla-creador" class="pantalla activa">
         <div class="panel-creador">
-            <h2>1. Forja tus cartas</h2>
+            <h2>⚔️ Forja tus Cartas</h2>
             <input type="text" id="nueva-pregunta" placeholder="Ej: ¿Qué hace el comando SELECT en SQL?">
             <input type="text" id="nueva-respuesta" placeholder="Ej: Recupera datos de una base de datos.">
-            <button onclick="agregarCarta()">➕ Agregar Carta</button>
+            <button onclick="agregarCarta()" style="width:100%; padding: 14px; font-size:1rem;">➕ Agregar Carta</button>
             
-            <h3 style="margin-top: 15px;">Cartas en tu mazo: <span id="contador-cartas" style="color: var(--primary);">0</span></h3>
+            <h3 style="margin-top: 18px; color: var(--text-muted); font-size: 0.9rem; text-align: center; font-weight: 400;">
+                Cartas en tu mazo: <span id="contador-cartas" style="color: var(--primary); font-weight: 700; font-size: 1.1rem;">0</span>
+            </h3>
             
             <div class="mini-controles">
-                <button class="mini-btn" onclick="document.getElementById('archivo-importar').click()">📥 Importar</button>
+                <button class="mini-btn" onclick="document.getElementById('archivo-importar').click()">📥 Importar JSON</button>
                 <input type="file" id="archivo-importar" accept=".json">
-                <button class="mini-btn" onclick="exportarMazo()">📤 Exportar</button>
-                <button class="mini-btn" style="color: var(--danger); border-color: #522;" onclick="borrarMazo()">🗑️ Borrar</button>
+                <button class="mini-btn" onclick="exportarMazo()">📤 Exportar JSON</button>
+                <button class="mini-btn" onclick="mostrarTutorial()">❓ ¿Cómo crear JSON con IA?</button>
+                <button class="mini-btn danger" onclick="borrarMazo()">🗑️ Borrar todo</button>
             </div>
             
-            <hr style="border: 1px solid #333; margin: 20px 0;">
-            <button id="btn-ir-sobre" onclick="cambiarPantalla('pantalla-sobre')" disabled style="font-size: 1.2rem; padding: 15px; width: 100%;">🎁 Jugar Mazo</button>
+            <hr>
+            <button id="btn-ir-sobre" onclick="cambiarPantalla('pantalla-sobre')" disabled style="font-size: 1.1rem; padding: 16px; width: 100%; border-radius: 12px;">
+                🎁 ¡Jugar Mazo!
+            </button>
         </div>
     </div>
 
+    <!-- ===== PANTALLA SOBRE ===== -->
     <div id="pantalla-sobre" class="pantalla">
-        <h2>¡Tu Pack está listo!</h2>
-        <p style="color: #aaa;">Haz clic en el sobre para sacar tus cartas al azar.</p>
+        <h2 style="font-family:'Bebas Neue',sans-serif; font-size:2rem; letter-spacing:3px; color:var(--primary);">¡Tu Pack está listo!</h2>
+        <p style="color: var(--text-muted); margin-bottom: 10px;">Haz clic en el sobre para sacar tus cartas al azar.</p>
         <div class="contenedor-sobre" onclick="abrirSobre()">
             <div class="sobre">
                 <h2>PACK</h2>
@@ -149,36 +280,120 @@
         <button class="mini-btn" onclick="cambiarPantalla('pantalla-creador')" style="margin-top: 40px;">← Volver al creador</button>
     </div>
 
+    <!-- ===== PANTALLA JUEGO ===== -->
     <div id="pantalla-juego" class="pantalla">
-        <h2>Toca las cartas para responder</h2>
+        <h2 style="font-family:'Bebas Neue',sans-serif; letter-spacing:2px; font-size:1.8rem;">Toca las cartas para responder</h2>
+        <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom: 10px;">Responde todas para poder evaluar</p>
         <div class="grid-cartas" id="contenedor-cartas"></div>
-        <button id="btn-verificar" style="display: none; margin-top: 30px; font-size: 1.5rem; padding: 15px 30px;" onclick="verificarEnServidor()">🧠 Evaluar con IA</button>
+        <button id="btn-verificar" style="display: none; margin-top: 30px; font-size: 1.1rem; padding: 16px 32px; border-radius: 12px;" onclick="verificarEnServidor()">🧠 Evaluar con IA</button>
     </div>
 
-    <div class="modal-overlay" id="modal">
-        <div class="modal-content">
-            <h3 id="modal-pregunta" style="color: var(--primary); margin-bottom: 20px; font-size: 1.5rem;"></h3>
+    <!-- ===== MODAL RESPUESTA ===== -->
+    <div class="modal-resp" id="modal">
+        <div class="modal-resp-content">
+            <h3 id="modal-pregunta"></h3>
             <input type="text" id="input-respuesta" placeholder="Escribe lo que recuerdes..." onkeypress="if(event.key === 'Enter') guardarRespuesta()">
-            <div style="margin-top: 20px;">
-                <button onclick="guardarRespuesta()">Confirmar</button>
-                <button onclick="document.getElementById('modal').style.display='none'" style="background: #555; color: white;">Cancelar</button>
+            <div style="margin-top: 18px; display:flex; justify-content:center; gap:10px;">
+                <button onclick="guardarRespuesta()">✅ Confirmar</button>
+                <button onclick="document.getElementById('modal').style.display='none'" style="background: var(--surface); color: #ccc; border: 1px solid var(--border);">Cancelar</button>
             </div>
         </div>
     </div>
 
+    <!-- ===== MODAL TUTORIAL ===== -->
+    <div class="modal-overlay" id="modal-tutorial">
+        <div class="modal-content">
+            <h2>🤖 Crear tarjetas con IA</h2>
+            <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 20px;">
+                Sigue estos pasos para convertir cualquier texto o apunte en un mazo importable.
+            </p>
+
+            <div class="paso">
+                <div class="paso-titulo"><span class="paso-num">1</span> Copia el Prompt de IA</div>
+                <p>Este prompt le indica a cualquier IA (ChatGPT, Gemini, Claude, etc.) que te genere las tarjetas en el formato correcto.</p>
+                <div class="prompt-box" id="prompt-copiable">Actúa como un profesor experto y creador de material didáctico. Te voy a proporcionar un documento de estudio (o texto). Tu objetivo es extraer los conceptos clave, definiciones importantes y datos cruciales, y convertirlos en un mazo de tarjetas de estudio (flashcards).
+
+Debes devolver el resultado ESTRICTAMENTE en formato JSON válido, sin Markdown, sin saludos, sin explicaciones previas ni posteriores. Solo el código JSON puro.
+
+La estructura del JSON debe ser exactamente esta:
+[
+  {
+    "pregunta": "¿Escribe aquí la pregunta clara y directa?",
+    "respuesta": "Escribe aquí la respuesta concisa y correcta."
+  }
+]
+
+Reglas críticas:
+- Genera al menos 15 tarjetas basadas en el documento.
+- Las respuestas deben ser claras y directas (1 a 3 oraciones cortas).
+- Asegúrate de que el JSON sea válido y no tenga errores de formato.
+
+Aquí tienes el material de estudio:
+[PEGA AQUÍ TU TEXTO O APUNTES]</div>
+                <button class="btn-copy" onclick="copiarPrompt()">📋 Copiar Prompt</button>
+            </div>
+
+            <div class="paso">
+                <div class="paso-titulo"><span class="paso-num">2</span> Pégalo en una IA y añade tu texto</div>
+                <p>Ve a ChatGPT, Gemini o Claude. Pega el prompt, reemplaza <code>[PEGA AQUÍ TU TEXTO...]</code> con tus apuntes y envía el mensaje. La IA te devolverá una lista de corchetes <code>[...]</code> con preguntas y respuestas.</p>
+            </div>
+
+            <div class="paso">
+                <div class="paso-titulo"><span class="paso-num">3</span> Guarda la respuesta como archivo .json</div>
+                <p>Aquí viene la parte clave. Tienes dos opciones:</p>
+                <h3>🅐 En computadora (fácil)</h3>
+                <p>
+                    Selecciona <strong>toda</strong> la respuesta de la IA (desde el primer <code>[</code> hasta el último <code>]</code>). Abre el <strong>Bloc de notas</strong> (Windows) o <strong>TextEdit</strong> (Mac), pégala ahí. Luego guarda el archivo eligiendo el nombre <code>mimazo.json</code>. <strong>¡Importante!</strong> En Windows, pon el nombre entre comillas: <code>"mimazo.json"</code> para que no se guarde como .txt.
+                </p>
+                <h3>🅑 Usando el método directo</h3>
+                <p>Muchas IAs tienen un botón para copiar el código. Copia el resultado, pégalo en <a href="https://jsoneditoronline.org" target="_blank" style="color:var(--primary);">jsoneditoronline.org</a> y descarga el archivo desde ahí.</p>
+            </div>
+
+            <div class="paso">
+                <div class="paso-titulo"><span class="paso-num">4</span> Importa el archivo aquí</div>
+                <p>Vuelve a TCG Study, haz clic en <strong>📥 Importar JSON</strong> y selecciona el archivo <code>mimazo.json</code> que guardaste. ¡Listo! Tus cartas aparecerán automáticamente.</p>
+            </div>
+
+            <div class="tip">
+                <strong>💡 Tip:</strong> El archivo JSON se ve así por dentro. No te preocupes si no lo entiendes, la IA lo genera automáticamente:
+                <div class="code-block">[
+  {
+    "pregunta": "¿Qué es una base de datos?",
+    "respuesta": "Es un sistema organizado para almacenar datos."
+  },
+  {
+    "pregunta": "¿Qué significa SQL?",
+    "respuesta": "Structured Query Language, lenguaje de consulta estructurado."
+  }
+]</div>
+            </div>
+
+            <div style="text-align: center; margin-top: 24px;">
+                <button onclick="cerrarTutorial()" style="font-size: 1rem; padding: 13px 30px; border-radius: 12px;">✅ ¡Entendido!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PANTALLA RESULTADOS ===== -->
     <div id="pantalla-resultados" class="pantalla">
         <div id="loading-groq">
             <div class="spinner"></div>
-            <h3 style="color: var(--primary); margin-top: 15px;">Evaluando con IA...</h3>
-            <p style="color: #aaa;">Verificando conceptos de forma segura.</p>
+            <h3 style="color: var(--primary); margin-top: 18px; font-family:'Bebas Neue',sans-serif; letter-spacing:2px; font-size:1.8rem;">Evaluando con IA...</h3>
+            <p style="color: var(--text-muted); margin-top: 8px; font-size: 0.9rem;">Verificando conceptos de forma inteligente.</p>
         </div>
 
         <div id="contenido-resultados" style="display: none; width: 100%; text-align: center;">
-            <h2 id="titulo-resultado" style="font-size: 2.5rem; margin-bottom: 5px;"></h2>
-            <p id="subtitulo-resultado" style="color: #aaa; margin-bottom: 30px;"></p>
-            <div id="lista-resultados" style="width: 100%;"></div>
-            <button onclick="cambiarPantalla('pantalla-sobre')" style="margin-top: 20px; font-size: 1.2rem;">Jugar otro sobre</button>
-            <button onclick="cambiarPantalla('pantalla-creador')" style="margin-top: 20px; background: #555; color: white;">Volver al creador</button>
+            <div class="score-badge" id="titulo-resultado"></div>
+            <p id="subtitulo-resultado" style="color: var(--text-muted); margin: 8px 0 4px;"></p>
+            <span class="badge-info" id="badge-ronda"></span>
+
+            <div id="lista-resultados" style="width: 100%; margin-top: 10px;"></div>
+
+            <div class="botones-resultado">
+                <button class="btn-pdf" onclick="descargarPDF()">📄 Descargar PDF de Resultados</button>
+                <button onclick="cambiarPantalla('pantalla-sobre')" style="font-size: 0.95rem; padding: 13px 22px;">🔁 Otro sobre</button>
+                <button onclick="cambiarPantalla('pantalla-creador')" style="background: var(--surface); color: #ccc; border: 1px solid var(--border); font-size: 0.9rem; padding: 13px 22px;">← Volver al creador</button>
+            </div>
         </div>
     </div>
 
@@ -186,6 +401,7 @@
         let miMazo = JSON.parse(localStorage.getItem('miMazoEstudio')) || [];
         let cartasEnJuego = [];
         let cartaActualIndex = null;
+        let ultimosResultados = [];
 
         function cambiarPantalla(id) {
             document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
@@ -196,7 +412,7 @@
         function agregarCarta() {
             const p = document.getElementById('nueva-pregunta');
             const r = document.getElementById('nueva-respuesta');
-            if(!p.value.trim() || !r.value.trim()) return alert("Llena ambos campos.");
+            if (!p.value.trim() || !r.value.trim()) return alert("Por favor llena ambos campos.");
             miMazo.push({ pregunta: p.value.trim(), respuesta: r.value.trim() });
             localStorage.setItem('miMazoEstudio', JSON.stringify(miMazo));
             p.value = ''; r.value = ''; p.focus();
@@ -204,7 +420,9 @@
         }
 
         function borrarMazo() {
-            if(confirm("¿Borrar todo?")) { miMazo = []; localStorage.removeItem('miMazoEstudio'); actualizarUI(); }
+            if (confirm("¿Borrar todas las cartas del mazo?")) {
+                miMazo = []; localStorage.removeItem('miMazoEstudio'); actualizarUI();
+            }
         }
 
         function actualizarUI() {
@@ -213,22 +431,48 @@
         }
 
         function exportarMazo() {
-            if(miMazo.length === 0) return alert("Mazo vacío.");
+            if (miMazo.length === 0) return alert("El mazo está vacío.");
             const a = document.createElement('a');
             a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(miMazo, null, 4));
             a.download = "mi_mazo_estudio.json"; a.click();
         }
 
-        document.getElementById('archivo-importar').addEventListener('change', function(e) {
+        document.getElementById('archivo-importar').addEventListener('change', function (e) {
             const file = e.target.files[0]; if (!file) return;
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 try {
                     const data = JSON.parse(e.target.result);
-                    if (Array.isArray(data)) { miMazo = data; localStorage.setItem('miMazoEstudio', JSON.stringify(miMazo)); actualizarUI(); }
-                } catch { alert("Error en el archivo."); }
-            }; reader.readAsText(file);
+                    if (Array.isArray(data) && data[0]?.pregunta) {
+                        miMazo = data;
+                        localStorage.setItem('miMazoEstudio', JSON.stringify(miMazo));
+                        actualizarUI();
+                        alert(`✅ ¡Importado! Se cargaron ${miMazo.length} cartas.`);
+                    } else { alert("❌ El archivo no tiene el formato correcto."); }
+                } catch { alert("❌ Error al leer el archivo. ¿Está bien formateado?"); }
+            };
+            reader.readAsText(file);
+            e.target.value = '';
         });
+
+        function mostrarTutorial() {
+            document.getElementById('modal-tutorial').classList.add('activo');
+        }
+        function cerrarTutorial() {
+            document.getElementById('modal-tutorial').classList.remove('activo');
+        }
+        document.getElementById('modal-tutorial').addEventListener('click', function(e) {
+            if (e.target === this) cerrarTutorial();
+        });
+
+        function copiarPrompt() {
+            const texto = document.getElementById('prompt-copiable').innerText;
+            navigator.clipboard.writeText(texto).then(() => {
+                const btn = document.querySelector('.btn-copy');
+                btn.innerText = '✅ ¡Copiado!';
+                setTimeout(() => btn.innerText = '📋 Copiar Prompt', 2000);
+            });
+        }
 
         function abrirSobre() {
             cambiarPantalla('pantalla-juego');
@@ -236,10 +480,12 @@
             const cont = document.getElementById('contenedor-cartas');
             cont.innerHTML = '';
             cartasEnJuego = [...miMazo].sort(() => Math.random() - 0.5).slice(0, 10);
-            
+
             cartasEnJuego.forEach((carta, i) => {
                 const div = document.createElement('div');
-                div.className = 'carta'; div.innerHTML = '?'; div.style.animationDelay = `${i * 0.15}s`;
+                div.className = 'carta';
+                div.innerHTML = '?';
+                div.style.animationDelay = `${i * 0.12}s`;
                 div.onclick = () => {
                     cartaActualIndex = i;
                     document.getElementById('modal-pregunta').innerText = carta.pregunta;
@@ -247,7 +493,9 @@
                     document.getElementById('modal').style.display = 'flex';
                     setTimeout(() => document.getElementById('input-respuesta').focus(), 100);
                 };
-                carta.elementoVisual = div; carta.respuestaUsuario = null; cont.appendChild(div);
+                carta.elementoVisual = div;
+                carta.respuestaUsuario = null;
+                cont.appendChild(div);
             });
         }
 
@@ -256,60 +504,250 @@
             if (!resp.trim()) return;
             cartasEnJuego[cartaActualIndex].respuestaUsuario = resp;
             const div = cartasEnJuego[cartaActualIndex].elementoVisual;
-            div.classList.add('respondida'); div.innerHTML = '✓';
+            div.classList.add('respondida');
+            div.innerHTML = '✓';
             document.getElementById('modal').style.display = 'none';
-            if(cartasEnJuego.every(c => c.respuestaUsuario !== null)) document.getElementById('btn-verificar').style.display = 'block';
+            if (cartasEnJuego.every(c => c.respuestaUsuario !== null)) {
+                document.getElementById('btn-verificar').style.display = 'block';
+            }
         }
 
-        // --- CONEXIÓN SEGURA CON VERCEL ---
         async function verificarEnServidor() {
             cambiarPantalla('pantalla-resultados');
             document.getElementById('loading-groq').style.display = 'flex';
             document.getElementById('contenido-resultados').style.display = 'none';
-            const listaDiv = document.getElementById('lista-resultados'); listaDiv.innerHTML = '';
+            const listaDiv = document.getElementById('lista-resultados');
+            listaDiv.innerHTML = '';
+            ultimosResultados = [];
 
-            // Preparamos los datos para enviarlos limpios al backend
             const payload = cartasEnJuego.map(c => ({
                 pregunta: c.pregunta, esperada: c.respuesta, usuario: c.respuestaUsuario, cartaOriginal: c
             }));
 
             try {
-                // Llamamos a la API oculta en Vercel
                 const response = await fetch('/api/evaluar', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ evaluaciones: payload })
                 });
-                
                 const data = await response.json();
-                if(data.error) throw new Error(data.error);
+                if (data.error) throw new Error(data.error);
 
                 let correctas = 0;
                 data.resultados.forEach(res => {
-                    if(res.esCorrecta) correctas++;
+                    if (res.esCorrecta) correctas++;
+                    ultimosResultados.push(res);
+
                     const item = document.createElement('div');
                     item.className = `resultado-item ${res.esCorrecta ? 'correcto' : 'incorrecto'}`;
                     item.innerHTML = `
-                        <strong style="font-size: 1.1rem;">${res.carta.pregunta}</strong>
-                        <div style="margin-top: 5px;">
-                            <span style="color: #aaa;">Tú: </span><span style="color: ${res.esCorrecta ? 'var(--success)' : 'var(--danger)'};">${res.carta.respuestaUsuario}</span>
+                        <div class="etiqueta">${res.esCorrecta ? '✅ CORRECTO' : '❌ INCORRECTO'}</div>
+                        <strong style="font-size:1rem; line-height:1.4;">${res.carta.pregunta}</strong>
+                        <div style="margin-top:8px; font-size:0.88rem;">
+                            <span style="color:var(--text-muted);">Tu respuesta: </span>
+                            <span style="color:${res.esCorrecta ? 'var(--success)' : 'var(--danger)'};">${res.carta.respuestaUsuario}</span>
                         </div>
-                        ${!res.esCorrecta ? `<div style="margin-top: 5px; color: #aaa; font-size: 0.9rem;">Era: <span style="color: white;">${res.carta.respuesta}</span></div>` : ''}
+                        ${!res.esCorrecta ? `<div style="margin-top:6px; font-size:0.85rem; color:var(--text-muted);">Respuesta esperada: <span style="color:#ddd;">${res.carta.respuesta}</span></div>` : ''}
                     `;
                     listaDiv.appendChild(item);
                 });
 
-                const titulo = document.getElementById('titulo-resultado');
-                titulo.innerText = correctas === cartasEnJuego.length ? "¡PERFECTO! 🎉" : (correctas >= cartasEnJuego.length / 2 ? "¡BIEN HECHO! 👍" : "A REPASAR 📖");
-                titulo.style.color = correctas === cartasEnJuego.length ? 'var(--success)' : (correctas >= cartasEnJuego.length / 2 ? 'var(--primary)' : 'var(--danger)');
-                document.getElementById('subtitulo-resultado').innerText = `Puntuación: ${correctas} de ${cartasEnJuego.length}`;
+                mostrarPuntuacion(correctas, cartasEnJuego.length);
 
             } catch (error) {
-                listaDiv.innerHTML = `<div class="resultado-item incorrecto">❌ Ocurrió un error al contactar al servidor: ${error.message}</div>`;
+                listaDiv.innerHTML = `<div class="resultado-item incorrecto">❌ Error al contactar el servidor: ${error.message}<br><br><small style="color:var(--text-muted);">¿Estás usando esto en local sin Vercel? La evaluación con IA requiere el backend desplegado.</small></div>`;
+                document.getElementById('titulo-resultado').innerText = "ERROR";
+                document.getElementById('titulo-resultado').style.color = 'var(--danger)';
+                document.getElementById('subtitulo-resultado').innerText = "No se pudo conectar al servidor.";
+                document.getElementById('badge-ronda').innerText = "";
             }
 
             document.getElementById('loading-groq').style.display = 'none';
             document.getElementById('contenido-resultados').style.display = 'block';
+        }
+
+        function mostrarPuntuacion(correctas, total) {
+            const titulo = document.getElementById('titulo-resultado');
+            const pct = Math.round((correctas / total) * 100);
+            if (correctas === total) {
+                titulo.innerText = "¡PERFECTO! 🎉";
+                titulo.style.color = 'var(--success)';
+            } else if (pct >= 60) {
+                titulo.innerText = "¡BIEN HECHO! 👍";
+                titulo.style.color = 'var(--primary)';
+            } else {
+                titulo.innerText = "A REPASAR 📖";
+                titulo.style.color = 'var(--danger)';
+            }
+            document.getElementById('subtitulo-resultado').innerText = `${correctas} de ${total} correctas (${pct}%)`;
+            document.getElementById('badge-ronda').innerText = `📊 Ronda completada · ${new Date().toLocaleDateString('es-CL')}`;
+        }
+
+        // ======= GENERACIÓN DE PDF =======
+        function descargarPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+            const margen = 18;
+            const anchoUtil = 210 - margen * 2;
+            let y = 20;
+            const lineHeight = 6;
+
+            // ---- Paleta ----
+            const amarillo  = [255, 203,   5];
+            const azul      = [ 59,  76, 202];
+            const verde     = [ 34, 197,  94];
+            const rojo      = [239,  68,  68];
+            const grisOsc   = [ 22,  22,  26];
+            const grisCard  = [ 30,  30,  38];
+            const grisMed   = [ 50,  50,  60];
+            const grisTxt   = [180, 180, 190];
+            const blanco    = [240, 240, 240];
+
+            // --- Fondo oscuro total ---
+            doc.setFillColor(...grisOsc);
+            doc.rect(0, 0, 210, 297, 'F');
+
+            // --- Barra superior decorativa ---
+            doc.setFillColor(...azul);
+            doc.rect(0, 0, 210, 28, 'F');
+            doc.setFillColor(...amarillo);
+            doc.rect(0, 26, 210, 3, 'F');
+
+            // --- Título en barra ---
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(22);
+            doc.setTextColor(...amarillo);
+            doc.text('TCG STUDY', margen, 17);
+
+            doc.setFontSize(9);
+            doc.setTextColor(200, 210, 255);
+            doc.text('Reporte de Resultados', margen, 23);
+
+            // --- Fecha top derecha ---
+            doc.setFontSize(8);
+            doc.setTextColor(200, 210, 255);
+            const fecha = new Date().toLocaleDateString('es-CL', { day:'2-digit', month:'long', year:'numeric' });
+            doc.text(fecha, 210 - margen, 23, { align: 'right' });
+
+            y = 38;
+
+            // --- Resumen de puntaje ---
+            const correctas = ultimosResultados.filter(r => r.esCorrecta).length;
+            const total = ultimosResultados.length;
+            const pct = Math.round((correctas / total) * 100);
+
+            doc.setFillColor(...grisCard);
+            doc.roundedRect(margen, y, anchoUtil, 26, 4, 4, 'F');
+            doc.setFillColor(...azul);
+            doc.roundedRect(margen, y, anchoUtil, 26, 4, 4, 'D');
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(18);
+            const colorScore = pct === 100 ? verde : (pct >= 60 ? amarillo : rojo);
+            doc.setTextColor(...colorScore);
+            const textoScore = pct === 100 ? '¡PERFECTO! 🎉' : (pct >= 60 ? '¡BIEN HECHO! 👍' : 'A REPASAR 📖');
+            doc.text(textoScore, 105, y + 10, { align: 'center' });
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9);
+            doc.setTextColor(...grisTxt);
+            doc.text(`${correctas} correctas de ${total} · ${pct}% de acierto`, 105, y + 19, { align: 'center' });
+
+            y += 34;
+
+            // --- Función auxiliar: texto envuelto ---
+            function addWrappedText(txt, x, startY, maxW, size, color, bold) {
+                doc.setFontSize(size);
+                doc.setTextColor(...color);
+                doc.setFont('helvetica', bold ? 'bold' : 'normal');
+                const lines = doc.splitTextToSize(txt, maxW);
+                doc.text(lines, x, startY);
+                return lines.length * (size * 0.38);
+            }
+
+            // --- Sección de errores primero ---
+            const erradas = ultimosResultados.filter(r => !r.esCorrecta);
+            const ok = ultimosResultados.filter(r => r.esCorrecta);
+
+            function renderSeccion(lista, esCorrecta) {
+                if (lista.length === 0) return;
+
+                // Título de sección
+                const colorSec = esCorrecta ? verde : rojo;
+                const labelSec = esCorrecta ? `✔ CORRECTAS (${lista.length})` : `✘ INCORRECTAS — Para repasar (${lista.length})`;
+
+                // Fondo título sección
+                doc.setFillColor(...colorSec);
+                doc.rect(margen, y, anchoUtil, 8, 'F');
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(9);
+                doc.setTextColor(esCorrecta ? 10 : 255, esCorrecta ? 10 : 255, esCorrecta ? 10 : 255);
+                doc.text(labelSec, margen + 4, y + 5.5);
+                y += 12;
+
+                lista.forEach((res, idx) => {
+                    // Estimar altura necesaria
+                    const pregLines = doc.splitTextToSize(res.carta.pregunta, anchoUtil - 12).length;
+                    const respLines = doc.splitTextToSize('Tu respuesta: ' + res.carta.respuestaUsuario, anchoUtil - 12).length;
+                    const esperadaLines = !esCorrecta ? doc.splitTextToSize('Esperada: ' + res.carta.respuesta, anchoUtil - 12).length : 0;
+                    const alturaEstimada = 8 + (pregLines + respLines + esperadaLines) * 4.5 + (esCorrecta ? 0 : 6) + 10;
+
+                    if (y + alturaEstimada > 278) {
+                        doc.addPage();
+                        doc.setFillColor(...grisOsc);
+                        doc.rect(0, 0, 210, 297, 'F');
+                        y = 15;
+                    }
+
+                    // Tarjeta
+                    doc.setFillColor(...grisCard);
+                    doc.roundedRect(margen, y, anchoUtil, alturaEstimada - 4, 3, 3, 'F');
+                    doc.setDrawColor(...(esCorrecta ? verde : rojo));
+                    doc.setLineWidth(0.5);
+                    doc.roundedRect(margen, y, anchoUtil, alturaEstimada - 4, 3, 3, 'D');
+
+                    // Número
+                    doc.setFillColor(...(esCorrecta ? verde : rojo));
+                    doc.circle(margen + 6, y + 6, 3.5, 'F');
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(7);
+                    doc.setTextColor(10, 10, 10);
+                    doc.text(String(idx + 1), margen + 6, y + 7.5, { align: 'center' });
+
+                    let cy = y + 5;
+
+                    // Pregunta
+                    cy += addWrappedText(res.carta.pregunta, margen + 12, cy, anchoUtil - 14, 9, blanco, true) + 3;
+
+                    // Tu respuesta
+                    cy += addWrappedText('Tu respuesta: ' + res.carta.respuestaUsuario, margen + 12, cy, anchoUtil - 14, 8,
+                        esCorrecta ? verde : rojo, false) + 3;
+
+                    // Respuesta esperada (solo si incorrecto)
+                    if (!esCorrecta) {
+                        cy += addWrappedText('Respuesta esperada: ' + res.carta.respuesta, margen + 12, cy, anchoUtil - 14, 8,
+                            grisTxt, false) + 2;
+                    }
+
+                    y += alturaEstimada;
+                });
+
+                y += 6;
+            }
+
+            renderSeccion(erradas, false);
+            renderSeccion(ok, true);
+
+            // --- Pie de página en última hoja ---
+            doc.setFillColor(...grisMed);
+            doc.rect(0, 287, 210, 10, 'F');
+            doc.setFont('helvetica', 'italic');
+            doc.setFontSize(7);
+            doc.setTextColor(...grisTxt);
+            doc.text('Generado por TCG Study · ¡Sigue estudiando!', 105, 293, { align: 'center' });
+
+            doc.save(`tcg-study-resultados-${Date.now()}.pdf`);
         }
 
         actualizarUI();
