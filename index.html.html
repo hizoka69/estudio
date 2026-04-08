@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TCG Study - Mi Mazo</title>
+    <title>Study Digital Card Game</title>
     <link rel="icon" type="image/x-icon" href="ico.ico">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
@@ -349,7 +349,7 @@
 </head>
 <body>
 
-    <h1 id="main-title">📚 TCG STUDY</h1>
+    <h1 id="main-title">📚 STUDY DCG</h1>
     <p class="tagline" id="main-tagline">Memoriza como un campeón</p>
 
     <div id="pantalla-creador" class="pantalla activa">
@@ -1025,7 +1025,7 @@ Aquí tienes el material de estudio:
             doc.setFillColor(...azul);   doc.rect(0,0,210,28,'F');
             doc.setFillColor(...amarillo); doc.rect(0,26,210,3,'F');
             doc.setFont('helvetica','bold'); doc.setFontSize(22); doc.setTextColor(...amarillo);
-            doc.text('TCG STUDY', margen, 17);
+            doc.text('STUDY DCG', margen, 17);
             doc.setFontSize(9); doc.setTextColor(200,210,255); doc.text('Reporte de Resultados', margen, 23);
             doc.setFontSize(8);
             const fecha = new Date().toLocaleDateString('es-CL',{day:'2-digit',month:'long',year:'numeric'});
@@ -1086,8 +1086,8 @@ Aquí tienes el material de estudio:
             
             doc.setFillColor(...grisMed); doc.rect(0,287,210,10,'F');
             doc.setFont('helvetica','italic'); doc.setFontSize(7); doc.setTextColor(...grisTxt);
-            doc.text('Generado por TCG Study · ¡Sigue estudiando!', 105, 293, {align:'center'});
-            doc.save(`tcg-study-resultados-${Date.now()}.pdf`);
+            doc.text('Generado por STUDY DCG · ¡Sigue estudiando!', 105, 293, {align:'center'});
+            doc.save(`study-dcg-resultados-${Date.now()}.pdf`);
         }
 
         actualizarUI();
