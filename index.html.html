@@ -34,6 +34,7 @@
             color: var(--text-light);
             display: flex; flex-direction: column; align-items: center;
             min-height: 100vh; padding: 20px; overflow-x: hidden;
+            user-select: none;
         }
 
         h1 {
@@ -43,8 +44,9 @@
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
             text-align: center; margin-bottom: 5px;
+            position: relative; z-index: 10;
         }
-        .tagline { color: var(--text-muted); font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 30px; }
+        .tagline { color: var(--text-muted); font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 30px; position: relative; z-index: 10; }
 
         input[type="text"] {
             width: 100%; padding: 12px 16px; font-size: 0.95rem; border: 1.5px solid var(--border);
@@ -63,7 +65,7 @@
         button:active { transform: scale(0.96); }
         button:disabled { background: #2a2a35; color: #555; cursor: not-allowed; box-shadow: none; }
 
-        .pantalla { display: none; flex-direction: column; align-items: center; width: 100%; max-width: 820px; }
+        .pantalla { display: none; flex-direction: column; align-items: center; width: 100%; max-width: 820px; position: relative; z-index: 10;}
         .pantalla.activa { display: flex; animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -87,169 +89,177 @@
         input[type="file"] { display: none; }
         hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
 
-        /* ===== SOBRE (pantalla selección) ===== */
-        .contenedor-sobre { perspective: 1000px; margin-top: 40px; cursor: pointer; }
-        .sobre {
-            width: 230px; height: 320px;
-            background: linear-gradient(145deg, #1a237e, var(--accent), #311b92);
-            border: 4px solid var(--primary); border-radius: 18px;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            box-shadow: 0 20px 50px rgba(59,76,202,0.5);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
-            position: relative; overflow: hidden;
-        }
-        .sobre::before {
-            content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.08), transparent);
-            animation: brillo 3s infinite;
-        }
-        @keyframes brillo { 0% { transform: translateX(-100%) rotate(45deg); } 100% { transform: translateX(100%) rotate(45deg); } }
-        .sobre:hover { transform: translateY(-18px) scale(1.06) rotateX(8deg); box-shadow: 0 35px 70px rgba(59,76,202,0.7); }
-        .sobre h2 { font-family: 'Bebas Neue', sans-serif; color: var(--primary); font-size: 2.5rem; letter-spacing: 4px; z-index: 1; }
-        .sobre p { color: rgba(255,255,255,0.7); font-size: 0.8rem; letter-spacing: 3px; font-weight: 600; z-index: 1; }
-
-        /* ===== OVERLAY ANIMACIÓN APERTURA ===== */
-        #overlay-apertura {
-            display: none;
-            position: fixed; inset: 0;
-            background: radial-gradient(ellipse at center, #070714 0%, #000005 100%);
-            z-index: 999;
-            overflow: hidden;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        #overlay-apertura.activo { display: flex; }
-
-        /* Rayos de luz giratorios */
-        #rayos {
-            position: absolute; inset: 0;
-            opacity: 0;
-            background: conic-gradient(
-                from 0deg at 50% 50%,
-                transparent 0deg, rgba(59,76,202,0.18) 8deg, transparent 16deg,
-                rgba(255,203,5,0.12) 24deg, transparent 32deg,
-                rgba(59,76,202,0.18) 40deg, transparent 48deg,
-                rgba(255,203,5,0.12) 56deg, transparent 64deg,
-                rgba(59,76,202,0.18) 72deg, transparent 80deg,
-                rgba(255,203,5,0.12) 88deg, transparent 96deg,
-                rgba(59,76,202,0.18) 104deg, transparent 112deg,
-                rgba(255,203,5,0.12) 120deg, transparent 128deg,
-                rgba(59,76,202,0.18) 136deg, transparent 144deg,
-                rgba(255,203,5,0.12) 152deg, transparent 160deg,
-                rgba(59,76,202,0.18) 168deg, transparent 176deg,
-                rgba(255,203,5,0.12) 184deg, transparent 192deg,
-                rgba(59,76,202,0.18) 200deg, transparent 208deg,
-                rgba(255,203,5,0.12) 216deg, transparent 224deg,
-                rgba(59,76,202,0.18) 232deg, transparent 240deg,
-                rgba(255,203,5,0.12) 248deg, transparent 256deg,
-                rgba(59,76,202,0.18) 264deg, transparent 272deg,
-                rgba(255,203,5,0.12) 280deg, transparent 288deg,
-                rgba(59,76,202,0.18) 296deg, transparent 304deg,
-                rgba(255,203,5,0.12) 312deg, transparent 320deg,
-                rgba(59,76,202,0.18) 328deg, transparent 336deg,
-                rgba(255,203,5,0.12) 344deg, transparent 352deg,
-                rgba(59,76,202,0.18) 360deg
-            );
-            animation: girarRayos 10s linear infinite;
-            pointer-events: none;
-        }
-        @keyframes girarRayos { to { transform: rotate(360deg); } }
-
-        /* Anillo de energía */
-        #anillo {
-            position: absolute;
-            width: 300px; height: 300px;
-            border-radius: 50%;
-            border: 2px solid rgba(255,203,5,0.15);
-            box-shadow: 0 0 30px rgba(59,76,202,0.2), inset 0 0 30px rgba(59,76,202,0.1);
-            animation: pulsarAnillo 2s ease-in-out infinite;
-            pointer-events: none;
-            opacity: 0;
-        }
-        @keyframes pulsarAnillo {
-            0%,100% { transform: scale(1); opacity: 0.3; }
-            50%      { transform: scale(1.15); opacity: 0.7; }
+        /* ===== PANTALLA CARRUSEL 3D ===== */
+        #pantalla-carrusel {
+            position: fixed; inset: 0; max-width: 100%; width: 100vw; height: 100vh;
+            background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, var(--bg-color) 70%);
+            z-index: 100; justify-content: center; align-items: center; overflow: hidden;
+            perspective: 1200px;
         }
 
-        /* Flash blanco al explotar */
-        #flash {
-            position: absolute; inset: 0;
-            background: white; opacity: 0;
-            pointer-events: none; z-index: 20;
+        .hint-carrusel {
+            position: absolute; top: 80px; width: 100%; text-align: center;
+            font-size: 1.5rem; font-family: 'Bebas Neue', sans-serif; letter-spacing: 3px;
+            color: var(--primary); text-shadow: 0 0 15px rgba(255, 203, 5, 0.5);
+            transition: opacity 0.5s; pointer-events: none; z-index: 110;
         }
 
-        /* Partículas flotantes */
-        .particula {
-            position: absolute;
-            border-radius: 50%;
-            pointer-events: none;
-            animation: particulaFlotando linear infinite;
+        .carousel-container {
+            width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.5s ease; cursor: grab; position: absolute; top: 0; left: 0;
         }
-        @keyframes particulaFlotando {
-            0%   { transform: translateY(110vh) rotate(0deg) scale(0); opacity: 0; }
-            5%   { opacity: 1; transform: translateY(90vh) rotate(30deg) scale(1); }
-            95%  { opacity: 0.6; }
-            100% { transform: translateY(-10vh) rotate(720deg) scale(0.5); opacity: 0; }
+        .carousel-container:active { cursor: grabbing; }
+
+        .carousel {
+            transform-style: preserve-3d; position: relative;
+            transform: rotateY(var(--carousel-rotation, 0deg));
         }
 
-        /* Sobre en la animación */
-        #sobre-animado {
+        .pack-slot {
+            width: 160px; height: 230px; position: absolute;
+            top: -115px; left: -80px; transform-style: preserve-3d;
+            cursor: pointer; transition: transform 0.4s ease, filter 0.4s ease;
+            transform-origin: center bottom;
+        }
+
+        .pack-slot:not(.focused):hover {
+            transform: rotateY(var(--pack-angle)) translateZ(350px) scale(1.15) translateY(-20px);
+            filter: brightness(1.2) drop-shadow(0 0 20px rgba(59, 76, 202, 0.6));
+        }
+
+        .pack-container {
+            width: 100%; height: 100%; transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
             position: relative; z-index: 10;
-            width: 200px; height: 280px;
-            background: linear-gradient(145deg, #1a237e, #3b4cca, #311b92);
-            border: 4px solid #ffcb05; border-radius: 18px;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            box-shadow: 0 0 40px rgba(59,76,202,0.7), 0 0 80px rgba(255,203,5,0.25);
-            overflow: hidden;
-            transform: scale(0) rotate(-20deg); opacity: 0;
         }
-        #sobre-animado::before {
-            content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            animation: brillo 2s infinite;
-        }
-        #sobre-animado h2 { font-family: 'Bebas Neue', sans-serif; color: #ffcb05; font-size: 2rem; letter-spacing: 3px; z-index: 1; }
-        #sobre-animado p  { color: rgba(255,255,255,0.7); font-size: 0.75rem; letter-spacing: 3px; font-weight: 600; z-index: 1; }
 
-        /* Texto de instrucción */
-        #texto-instruccion {
-            position: relative; z-index: 10;
-            color: rgba(255,255,255,0.55);
-            font-size: 0.78rem; letter-spacing: 3px; text-transform: uppercase;
-            margin-top: 30px; opacity: 0;
-            animation: parpadeo 1.5s ease-in-out infinite;
+        .pack-wrapper {
+            position: absolute; width: 100%; height: 100%;
+            background: transparent; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+            transform-style: preserve-3d; z-index: 10;
+            -webkit-box-reflect: below 15px linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(255, 255, 255, 0.15));
         }
-        @keyframes parpadeo { 0%,100%{opacity:0.2} 50%{opacity:0.9} }
+
+        .pack-body {
+            position: absolute; top: 16px; bottom: 8px; width: 100%; height: calc(100% - 24px);
+            background: #111; overflow: hidden;
+            /* Bordes curvos sutiles a los lados y sombreado lateral para parecer inflado */
+            border-radius: 2px;
+            border-left: 2px solid rgba(255,255,255,0.2); 
+            border-right: 2px solid rgba(0,0,0,0.6);
+            box-shadow: inset 0 0 25px rgba(0,0,0,0.8);
+            z-index: 11;
+        }
+
+        /* Agrega la clase para tu foto */
+        .pack-body-img {
+            width: 100%; height: 100%; 
+            object-fit: cover; display: block; position: absolute; inset: 0; z-index: 1;
+        }
+
+        /* Textos flotantes sobre la imagen (opcional) */
+        .pack-overlay-content {
+            position: absolute; bottom: 15px; width: 100%; text-align: center;
+            z-index: 2; color: white; text-shadow: 0 3px 6px rgba(0,0,0,0.9);
+        }
+        .pack-overlay-content h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--primary); margin: 0; line-height: 1;}
+        .pack-overlay-content p { font-size: 0.6rem; opacity: 0.9; letter-spacing: 2px; margin: 0;}
+
+        .pack-top-seal {
+            position: absolute; top: -12px; width: 100%; height: 28px;
+            /* Textura de rayas verticales (foil amarillo/dorado) */
+            background: repeating-linear-gradient(90deg, #d4a000, #d4a000 2px, #ffcc00 2px, #ffcc00 4.5px);
+            /* Relieve 3D */
+            box-shadow: inset 0 -3px 6px rgba(0,0,0,0.4), 0 3px 5px rgba(0,0,0,0.5);
+            border-top: 2px solid rgba(255,255,255,0.4); /* Borde de luz arriba */
+            z-index: 12; transform-origin: bottom right;
+        }
+
+            .pack-top-seal::after {
+            content: ''; position: absolute;
+            bottom: 6px; left: 0; width: 100%; height: 1px;
+            border-bottom: 2px dashed rgba(0,0,0,0.5); /* La línea para rasgar */
+            box-shadow: 0 1px 0 rgba(255,255,255,0.2); /* Brillo sutil del corte */
+        }
+
+        .pack-bottom-seal {
+            position: absolute; bottom: -12px; width: 100%; height: 20px;
+            background: repeating-linear-gradient(90deg, #d4a000, #d4a000 2px, #ffcc00 2px, #ffcc00 4.5px);
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.4), 0 -2px 5px rgba(0,0,0,0.5);
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+            z-index: 12;
+        }
+
+        @keyframes holoGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Contenedor enfocado (cuando se elige el sobre) */
+        .focused-container {
+            position: absolute; inset: 0; display: flex; justify-content: center; align-items: center;
+            pointer-events: none; opacity: 0; transition: opacity 0.5s ease 0.3s; z-index: 200;
+        }
+        .show-focused { opacity: 1; pointer-events: all; }
+        .focused-container .pack-container { width: 300px; height: 420px; }
+        .focused-container .pack-body h2 { font-size: 3rem; }
+        .focused-container .pack-body p { font-size: 1rem; }
+        .focused-container .pack-top-seal { cursor: ew-resize; }
+        .fade-out { opacity: 0 !important; pointer-events: none; }
+
+        /* Animación de Rasgado */
+        .torn .pack-top-seal {
+            transform: translateX(150px) translateY(-50px) rotate(60deg) scale(0) !important;
+            opacity: 0; transition: all 0.5s cubic-bezier(0.55, 0.085, 0.68, 0.53) !important;
+        }
+        .torn .pack-body {
+            transform: translateY(150px) rotateX(-30deg); opacity: 0; transition: all 0.6s ease-in 0.1s;
+        }
+
+        /* Flash blanco de transición */
+        #flash-blanco {
+            position: fixed; inset: 0; background: white; opacity: 0;
+            pointer-events: none; z-index: 9999; transition: opacity 0.4s ease;
+        }
+
+        .btn-volver-carrusel {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white;
+            padding: 10px 20px; z-index: 300; display: none;
+        }
+        #pantalla-carrusel.activa .btn-volver-carrusel { display: block; }
 
         /* Cartas volando durante la animación */
         .carta-volando {
-            position: absolute; z-index: 15;
-            width: 80px; height: 112px;
-            border-radius: 10px;
-            border: 2px solid #ffcb05;
-            overflow: hidden;
+            position: absolute; z-index: 9000; width: 80px; height: 112px;
+            border-radius: 10px; border: 2px solid var(--primary); overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 20px rgba(255,203,5,0.3);
             pointer-events: none;
         }
-        .carta-volando img {
-            width: 100%; height: 100%;
-            object-fit: cover; display: block; border-radius: 8px;
-        }
+        .carta-volando img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 8px; }
 
         /* ===== GRILLA DE CARTAS EN JUEGO ===== */
         .grid-cartas {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 14px; width: 100%; margin-top: 20px;
+            /* ¡SOLUCIÓN AQUÍ! Cambiado de Grid a Flex para mantener proporciones fijas siempre */
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 14px; 
+            width: 100%; 
+            margin-top: 20px;
         }
 
         .carta-wrapper {
-            height: 185px;
-            perspective: 500px;
-            cursor: pointer;
+            /* ¡SOLUCIÓN AQUÍ! Ancho y alto estricto e inamovible */
+            width: 130px; 
+            height: 185px; 
+            perspective: 500px; 
+            cursor: pointer; 
             opacity: 0;
         }
+        
         .carta-wrapper.apareciendo {
             animation: cartaAterrizando 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
@@ -261,82 +271,45 @@
         }
 
         .carta-inner {
-            width: 100%; height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            border-radius: 12px;
-            transition: box-shadow 0.25s, transform 0.1s ease-out;
+            width: 100%; height: 100%; position: relative; transform-style: preserve-3d;
+            border-radius: 12px; transition: box-shadow 0.25s, transform 0.1s ease-out;
         }
-        .carta-wrapper:hover:not(.respondida) .carta-inner {
-            box-shadow: 0 20px 45px rgba(255,203,5,0.3);
-        }
+        .carta-wrapper:hover:not(.respondida) .carta-inner { box-shadow: 0 20px 45px rgba(255,203,5,0.3); }
 
-        /* Dorso con detras.png */
+        /* Dorso con detras.png intacto y con animaciones holográficas */
         .carta-dorso {
-            width: 100%; height: 100%;
-            border-radius: 12px;
-            border: 2px solid #2a2a35;
-            overflow: hidden;
-            position: relative;
-            transition: border-color 0.25s;
+            width: 100%; height: 100%; border-radius: 12px; border: 2px solid #2a2a35;
+            overflow: hidden; position: relative; transition: border-color 0.25s;
         }
-        .carta-dorso img {
-            width: 100%; height: 100%;
-            object-fit: cover; display: block; border-radius: 10px;
-            pointer-events: none; user-select: none;
-        }
-        /* Brillo holográfico sobre la imagen */
+        .carta-dorso img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 10px; pointer-events: none; }
         .carta-dorso .holo {
             position: absolute; inset: 0; border-radius: 10px;
-            background: linear-gradient(
-                135deg,
-                transparent 25%,
-                rgba(255,255,255,0.05) 45%,
-                rgba(255,203,5,0.07) 50%,
-                rgba(59,76,202,0.07) 55%,
-                transparent 75%
-            );
-            pointer-events: none;
-            transition: background 0.2s;
+            background: linear-gradient(135deg, transparent 25%, rgba(255,255,255,0.05) 45%, rgba(255,203,5,0.07) 50%, rgba(59,76,202,0.07) 55%, transparent 75%);
+            pointer-events: none; transition: background 0.2s;
         }
         .carta-wrapper:hover:not(.respondida) .carta-dorso { border-color: var(--primary); }
         .carta-wrapper:hover:not(.respondida) .carta-dorso .holo {
-            background: linear-gradient(
-                135deg,
-                transparent 15%,
-                rgba(255,255,255,0.12) 40%,
-                rgba(255,203,5,0.14) 50%,
-                rgba(59,76,202,0.12) 60%,
-                transparent 85%
-            );
+            background: linear-gradient(135deg, transparent 15%, rgba(255,255,255,0.12) 40%, rgba(255,203,5,0.14) 50%, rgba(59,76,202,0.12) 60%, transparent 85%);
         }
 
         /* Estado respondida */
-        .carta-wrapper.respondida .carta-dorso {
-            border-color: var(--success);
-        }
-        .carta-wrapper.respondida .carta-dorso img {
-            filter: brightness(0.45) saturate(0.3);
-        }
+        .carta-wrapper.respondida .carta-dorso { border-color: var(--success); }
+        .carta-wrapper.respondida .carta-dorso img { filter: brightness(0.45) saturate(0.3); }
         .check-overlay {
-            display: none; position: absolute; inset: 0;
-            justify-content: center; align-items: center;
-            font-size: 3rem; border-radius: 10px;
-            background: rgba(0,0,0,0.3); pointer-events: none; z-index: 2;
+            display: none; position: absolute; inset: 0; justify-content: center; align-items: center;
+            font-size: 3rem; border-radius: 10px; background: rgba(0,0,0,0.3); pointer-events: none; z-index: 2;
         }
         .carta-wrapper.respondida .check-overlay { display: flex; }
 
         /* ===== MODALES ===== */
         .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.88); justify-content: center; align-items: center;
-            z-index: 200; backdrop-filter: blur(6px);
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88);
+            justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(6px);
         }
         .modal-overlay.activo { display: flex; }
         .modal-content {
-            background: var(--card-bg); padding: 32px; border-radius: 18px;
-            border: 2px solid var(--primary); width: 92%; max-width: 620px;
-            max-height: 85vh; overflow-y: auto;
+            background: var(--card-bg); padding: 32px; border-radius: 18px; border: 2px solid var(--primary);
+            width: 92%; max-width: 620px; max-height: 85vh; overflow-y: auto;
             animation: popModal 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards;
         }
         @keyframes popModal { from { transform: scale(0.85); opacity:0; } to { transform: scale(1); opacity:1; } }
@@ -351,10 +324,9 @@
         .tip { background: rgba(255,203,5,0.08); border: 1px solid rgba(255,203,5,0.2); border-radius: 10px; padding: 12px 16px; font-size: 0.85rem; color: #ddd; margin-top: 14px; }
         .tip strong { color: var(--primary); }
         .prompt-box { background: #0d0d0f; border: 1.5px solid var(--accent); border-radius: 10px; padding: 14px; font-size: 0.78rem; color: #ccc; font-family: 'Courier New', monospace; line-height: 1.6; white-space: pre-wrap; max-height: 200px; overflow-y: auto; margin: 10px 0; }
-        .btn-copy { background: var(--accent); color: white; border: none; padding: 6px 14px; border-radius: 7px; cursor: pointer; font-size: 0.8rem; font-weight: 700; font-family: 'Inter', sans-serif; margin-top: 6px; transition: background 0.2s; }
-        .btn-copy:hover { background: #2f3da0; }
+        .btn-copy { background: var(--accent); color: white; border: none; padding: 6px 14px; border-radius: 7px; cursor: pointer; font-size: 0.8rem; font-weight: 700; margin-top: 6px; transition: background 0.2s; }
 
-        .modal-resp { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.88); justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(5px); }
+        .modal-resp { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88); justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(5px); }
         .modal-resp-content { background: var(--card-bg); padding: 30px; border-radius: 18px; border: 2px solid var(--primary); width: 90%; max-width: 500px; text-align: center; animation: popModal 0.3s forwards; }
         .modal-resp-content h3 { color: var(--primary); margin-bottom: 16px; font-size: 1.2rem; line-height: 1.5; }
 
@@ -377,22 +349,9 @@
 </head>
 <body>
 
-    <h1>📚 TCG STUDY</h1>
-    <p class="tagline">Memoriza como un campeón</p>
+    <h1 id="main-title">📚 TCG STUDY</h1>
+    <p class="tagline" id="main-tagline">Memoriza como un campeón</p>
 
-    <!-- ===== OVERLAY ANIMACIÓN APERTURA ===== -->
-    <div id="overlay-apertura">
-        <div id="rayos"></div>
-        <div id="anillo"></div>
-        <div id="flash"></div>
-        <div id="sobre-animado">
-            <h2>PACK</h2>
-            <p>DE ESTUDIO</p>
-        </div>
-        <p id="texto-instruccion">Haz clic para abrir</p>
-    </div>
-
-    <!-- ===== PANTALLA CREADOR ===== -->
     <div id="pantalla-creador" class="pantalla activa">
         <div class="panel-creador">
             <h2>⚔️ Forja tus Cartas</h2>
@@ -410,26 +369,25 @@
                 <button class="mini-btn danger" onclick="borrarMazo()">🗑️ Borrar todo</button>
             </div>
             <hr>
-            <button id="btn-ir-sobre" onclick="iniciarAnimacionApertura()" disabled style="font-size: 1.1rem; padding: 16px; width: 100%; border-radius: 12px;">
+            <button id="btn-ir-sobre" onclick="mostrarCarrusel()" disabled style="font-size: 1.1rem; padding: 16px; width: 100%; border-radius: 12px;">
                 🎁 ¡Jugar Mazo!
             </button>
         </div>
     </div>
 
-    <!-- ===== PANTALLA SOBRE ===== -->
-    <div id="pantalla-sobre" class="pantalla">
-        <h2 style="font-family:'Bebas Neue',sans-serif; font-size:2rem; letter-spacing:3px; color:var(--primary);">¡Tu Pack está listo!</h2>
-        <p style="color: var(--text-muted); margin-bottom: 10px;">Haz clic en el sobre para sacar tus cartas al azar.</p>
-        <div class="contenedor-sobre" onclick="iniciarAnimacionApertura()">
-            <div class="sobre">
-                <h2>PACK</h2>
-                <p>DE ESTUDIO</p>
-            </div>
+    <div id="pantalla-carrusel" class="pantalla">
+        <h2 class="hint-carrusel" id="hintText">Desliza para elegir tu pack</h2>
+        
+        <div class="carousel-container" id="carouselContainer">
+            <div class="carousel" id="carousel"></div>
         </div>
-        <button class="mini-btn" onclick="cambiarPantalla('pantalla-creador')" style="margin-top: 40px;">← Volver al creador</button>
+
+        <div class="focused-container" id="focusedContainer"></div>
+        <button class="btn-volver-carrusel" onclick="volverACreadorDesdeCarrusel()">← Volver al Creador</button>
     </div>
 
-    <!-- ===== PANTALLA JUEGO ===== -->
+    <div id="flash-blanco"></div>
+
     <div id="pantalla-juego" class="pantalla">
         <h2 style="font-family:'Bebas Neue',sans-serif; letter-spacing:2px; font-size:1.8rem;">Toca las cartas para responder</h2>
         <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom: 10px;">Responde todas para poder evaluar</p>
@@ -437,7 +395,6 @@
         <button id="btn-verificar" style="display: none; margin-top: 30px; font-size: 1.1rem; padding: 16px 32px; border-radius: 12px;" onclick="verificarEnServidor()">🧠 Evaluar con IA</button>
     </div>
 
-    <!-- ===== MODAL RESPUESTA ===== -->
     <div class="modal-resp" id="modal">
         <div class="modal-resp-content">
             <h3 id="modal-pregunta"></h3>
@@ -449,7 +406,6 @@
         </div>
     </div>
 
-    <!-- ===== MODAL TUTORIAL ===== -->
     <div class="modal-overlay" id="modal-tutorial">
         <div class="modal-content">
             <h2>🤖 Crear cartas con IA</h2>
@@ -480,32 +436,11 @@ Aquí tienes el material de estudio:
             </div>
             <div class="paso">
                 <div class="paso-titulo"><span class="paso-num">2</span> Pégalo en una IA y añade tu texto</div>
-                <p>Ve a ChatGPT, Gemini o Claude. Pega el prompt, reemplaza <code>[PEGA AQUÍ TU TEXTO...]</code> con tus apuntes y envía el mensaje. La IA te devolverá una lista de corchetes <code>[...]</code> con preguntas y respuestas.</p>
+                <p>Ve a ChatGPT, Gemini o Claude. Pega el prompt, reemplaza <code>[PEGA AQUÍ TU TEXTO...]</code> con tus apuntes y envía el mensaje.</p>
             </div>
             <div class="paso">
-                <div class="paso-titulo"><span class="paso-num">3</span> Guarda la respuesta como archivo .json</div>
-                <p>Aquí viene la parte clave. Tienes dos opciones:</p>
-                <h3>🅐 En computadora (fácil)</h3>
-                <p>Selecciona <strong>toda</strong> la respuesta de la IA (desde el primer <code>[</code> hasta el último <code>]</code>). Abre el <strong>Bloc de notas</strong> (Windows) o <strong>TextEdit</strong> (Mac), pégala ahí. Guarda el archivo con el nombre <code>mimazo.json</code>. <strong>¡Importante!</strong> En Windows, pon el nombre entre comillas: <code>"mimazo.json"</code> para que no se guarde como .txt.</p>
-                <h3>🅑 Usando el método directo</h3>
-                <p>Muchas IAs tienen un botón para copiar el código. Copia el resultado, pégalo en <a href="https://jsoneditoronline.org" target="_blank" style="color:var(--primary);">jsoneditoronline.org</a> y descarga el archivo desde ahí.</p>
-            </div>
-            <div class="paso">
-                <div class="paso-titulo"><span class="paso-num">4</span> Importa el archivo aquí</div>
-                <p>Vuelve a TCG Study, haz clic en <strong>📥 Importar JSON</strong> y selecciona el archivo <code>mimazo.json</code> que guardaste. ¡Listo! Tus cartas aparecerán automáticamente.</p>
-            </div>
-            <div class="tip">
-                <strong>💡 Tip:</strong> El archivo JSON se ve así por dentro:
-                <div class="code-block">[
-  {
-    "pregunta": "¿Qué es una base de datos?",
-    "respuesta": "Es un sistema organizado para almacenar datos."
-  },
-  {
-    "pregunta": "¿Qué significa SQL?",
-    "respuesta": "Structured Query Language, lenguaje de consulta estructurado."
-  }
-]</div>
+                <div class="paso-titulo"><span class="paso-num">3</span> Guarda la respuesta como .json</div>
+                <p>Copia el resultado, guárdalo en un bloc de notas como <code>"mimazo.json"</code> o usa jsoneditoronline.org.</p>
             </div>
             <div style="text-align: center; margin-top: 24px;">
                 <button onclick="cerrarTutorial()" style="font-size: 1rem; padding: 13px 30px; border-radius: 12px;">✅ ¡Entendido!</button>
@@ -513,7 +448,6 @@ Aquí tienes el material de estudio:
         </div>
     </div>
 
-    <!-- ===== PANTALLA RESULTADOS ===== -->
     <div id="pantalla-resultados" class="pantalla">
         <div id="loading-groq">
             <div class="spinner"></div>
@@ -527,7 +461,7 @@ Aquí tienes el material de estudio:
             <div id="lista-resultados" style="width: 100%; margin-top: 10px;"></div>
             <div class="botones-resultado">
                 <button class="btn-pdf" onclick="descargarPDF()">📄 Descargar PDF de Resultados</button>
-                <button onclick="iniciarAnimacionApertura()" style="font-size: 0.95rem; padding: 13px 22px;">🔁 Otro sobre</button>
+                <button onclick="mostrarCarrusel()" style="font-size: 0.95rem; padding: 13px 22px;">🔁 Otro sobre</button>
                 <button onclick="cambiarPantalla('pantalla-creador')" style="background: var(--surface); color: #ccc; border: 1px solid var(--border); font-size: 0.9rem; padding: 13px 22px;">← Volver al creador</button>
             </div>
         </div>
@@ -540,119 +474,232 @@ Aquí tienes el material de estudio:
         let ultimosResultados = [];
 
         // =====================================================
-        //  ANIMACIÓN ÉPICA DE APERTURA DE SOBRE
+        //  SISTEMA DEL CARRUSEL 3D
         // =====================================================
-        function iniciarAnimacionApertura() {
-            const overlay   = document.getElementById('overlay-apertura');
-            const sobreEl   = document.getElementById('sobre-animado');
-            const rayosEl   = document.getElementById('rayos');
-            const anilloEl  = document.getElementById('anillo');
-            const instrucEl = document.getElementById('texto-instruccion');
-            const flashEl   = document.getElementById('flash');
+        const carousel = document.getElementById('carousel');
+        const carouselContainer = document.getElementById('carouselContainer');
+        const focusedContainer = document.getElementById('focusedContainer');
+        const hintText = document.getElementById('hintText');
+        const flashBlanco = document.getElementById('flash-blanco');
+        const totalPacks = 12; // 12 sobres para el círculo completo
+        let currentRotation = 0;
+        let isOpened = false;
 
-            // Limpiar restos anteriores
-            overlay.querySelectorAll('.particula, .carta-volando').forEach(el => el.remove());
+        function inicializarCarrusel() {
+            carousel.innerHTML = '';
+            for (let i = 0; i < totalPacks; i++) {
+                const angle = (360 / totalPacks) * i;
+                const slot = document.createElement('div');
+                slot.className = 'pack-slot';
+                
+                // Colocamos el sobre en el círculo usando translateZ y rotateY
+                slot.style.setProperty('--pack-angle', `${angle}deg`);
+                slot.style.transform = `rotateY(${angle}deg) translateZ(350px)`; 
 
-            // Mostrar overlay
-            overlay.classList.add('activo');
+                slot.innerHTML = `
+                    <div class="pack-container">
+                        <div class="pack-wrapper">
+                            <div class="pack-top-seal"></div>
+                            
+                            <div class="pack-body">
+                                <img src="detras.png" class="pack-body-img" alt="Portada">
+                                
+                                <div class="pack-overlay-content">
+                                    <h3>TCG STUDY</h3>
+                                    <p>PACK DE ESTUDIO</p>
+                                </div>
+                            </div>
 
-            // Reset estado inicial
-            sobreEl.style.transition = 'none';
-            sobreEl.style.transform  = 'scale(0) rotate(-20deg)';
-            sobreEl.style.opacity    = '0';
-            rayosEl.style.transition = 'none';
-            rayosEl.style.opacity    = '0';
-            anilloEl.style.opacity   = '0';
-            instrucEl.style.opacity  = '0';
-            flashEl.style.opacity    = '0';
-            flashEl.style.transition = 'none';
+                            <div class="pack-bottom-seal"></div>
+                        </div>
+                    </div>
+                `;
+                carousel.appendChild(slot);
 
-            // Crear partículas de ambiente
-            crearParticulas(overlay);
+                // Lógica de click para elegir
+                slot.addEventListener('click', () => {
+                    if (wasDragged || focusedContainer.classList.contains('show-focused')) return;
 
-            // — FASE 1: Sobre entra con bounce (100ms) —
-            setTimeout(() => {
-                sobreEl.style.transition = 'transform 0.65s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s ease';
-                sobreEl.style.transform  = 'scale(1) rotate(0deg)';
-                sobreEl.style.opacity    = '1';
-            }, 120);
+                    // Ocultar carrusel y botones
+                    carouselContainer.classList.add('fade-out');
+                    hintText.style.opacity = 0;
+                    document.querySelector('.btn-volver-carrusel').style.display = 'none';
 
-            // — FASE 2: Rayos y anillo aparecen (600ms) —
-            setTimeout(() => {
-                rayosEl.style.transition = 'opacity 0.5s ease';
-                rayosEl.style.opacity    = '0.8';
-                anilloEl.style.transition= 'opacity 0.5s ease';
-                anilloEl.style.opacity   = '1';
-            }, 600);
+                    // Clonar el sobre seleccionado al contenedor enfocado
+                    const clonedPack = slot.querySelector('.pack-container').cloneNode(true);
+                    focusedContainer.innerHTML = ''; // Limpiar previo
+                    focusedContainer.appendChild(clonedPack);
 
-            // — FASE 3: Sobre tiembla (anticipación) (1100ms) —
-            setTimeout(() => {
-                sobreEl.style.transition = 'none';
-                let t = 0;
-                const vibrar = setInterval(() => {
-                    const dx = (Math.random() - 0.5) * 16;
-                    const dy = (Math.random() - 0.5) * 8;
-                    const dr = (Math.random() - 0.5) * 10;
-                    sobreEl.style.transform = `translate(${dx}px,${dy}px) rotate(${dr}deg) scale(1.07)`;
-                    if (++t >= 12) {
-                        clearInterval(vibrar);
-                        sobreEl.style.transition = 'transform 0.3s ease';
-                        sobreEl.style.transform  = 'scale(1) rotate(0deg)';
-                    }
-                }, 75);
-            }, 1100);
-
-            // — FASE 4: Texto "Haz clic" aparece (1500ms) —
-            setTimeout(() => { instrucEl.style.opacity = '1'; }, 1500);
-
-            // — Click handler para explotar —
-            const clickHandler = (e) => {
-                overlay.removeEventListener('click', clickHandler);
-                instrucEl.style.opacity = '0';
-                explotarSobre(sobreEl, flashEl, rayosEl, anilloEl, overlay);
-            };
-            setTimeout(() => overlay.addEventListener('click', clickHandler), 1300);
-        }
-
-        function explotarSobre(sobreEl, flashEl, rayosEl, anilloEl, overlay) {
-            // Pequeño zoom antes de explotar
-            sobreEl.style.transition = 'transform 0.12s ease-in';
-            sobreEl.style.transform  = 'scale(1.18) rotate(3deg)';
-
-            setTimeout(() => {
-                // El sobre desaparece girando
-                sobreEl.style.transition = 'transform 0.28s cubic-bezier(0.55,0,1,0.45), opacity 0.22s ease';
-                sobreEl.style.transform  = 'scale(0) rotate(35deg)';
-                sobreEl.style.opacity    = '0';
-
-                // Flash cegador
-                flashEl.style.opacity    = '1';
-                setTimeout(() => {
-                    flashEl.style.transition = 'opacity 0.6s ease';
-                    flashEl.style.opacity    = '0';
-                }, 60);
-
-                // Rayos y anillo se desvanecen
-                rayosEl.style.transition = 'opacity 0.8s ease';
-                rayosEl.style.opacity    = '0';
-                anilloEl.style.transition= 'opacity 0.8s ease';
-                anilloEl.style.opacity   = '0';
-
-            }, 120);
-
-            // Lanzar cartas desde el centro
-            setTimeout(() => {
-                lanzarCartas(overlay, () => {
+                    // Mostrar el contenedor enfocado con el sobre centrado
+                    focusedContainer.classList.add('show-focused');
+                    
+                    // Activar interacciones en el clon
                     setTimeout(() => {
-                        overlay.classList.remove('activo');
-                        prepararJuego();
-                    }, 350);
+                        const seal = clonedPack.querySelector('.pack-top-seal');
+                        activarRasgado(clonedPack, seal);
+                        hintText.innerText = "¡Arrastra la pestaña dorada para abrir!";
+                        hintText.style.opacity = 1;
+                    }, 500);
                 });
-            }, 230);
+            }
         }
 
-        function lanzarCartas(overlay, callback) {
-            const n  = 10; // siempre lanzamos 10 mini-cartas visuales
+        // Lógica de arrastre del carrusel (swipe 360)
+        let isDraggingCarousel = false;
+        let startXCarousel = 0;
+        let startRotationCarousel = 0;
+        let wasDragged = false; // Variable para diferenciar entre clic y deslizamiento
+
+        const dragStart = (e) => {
+            if (focusedContainer.classList.contains('show-focused')) return;
+            isDraggingCarousel = true;
+            wasDragged = false;
+            startXCarousel = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+            startRotationCarousel = currentRotation;
+            carousel.style.transition = 'none'; // Quitamos transición para respuesta inmediata
+        };
+
+        const dragMove = (e) => {
+            if (!isDraggingCarousel) return;
+            const currentX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+            const deltaX = currentX - startXCarousel;
+            
+            // Si se mueve más de 5 píxeles, se considera que está arrastrando, no haciendo clic
+            if (Math.abs(deltaX) > 5) wasDragged = true; 
+
+            // Multiplicador 0.8 para ajustar la sensibilidad del giro
+            currentRotation = startRotationCarousel + (deltaX * 0.8); 
+            carousel.style.transform = `rotateY(${currentRotation}deg)`;
+        };
+
+        const dragEnd = () => {
+            if (!isDraggingCarousel) return;
+            isDraggingCarousel = false;
+            // Al soltar, devolvemos la transición suave para que se asiente
+            carousel.style.transition = 'transform 0.4s ease-out';
+        };
+
+        carouselContainer.addEventListener('mousedown', dragStart);
+        carouselContainer.addEventListener('touchstart', dragStart, {passive: true});
+        
+        window.addEventListener('mousemove', dragMove);
+        window.addEventListener('touchmove', dragMove, {passive: true});
+        
+        window.addEventListener('mouseup', dragEnd);
+        window.addEventListener('touchend', dragEnd);
+
+
+        // Lógica de inspección y rasgado interactivo (En el clon enfocado)
+        function activarRasgado(container, seal) {
+            
+            // Efecto tilt al mover el ratón / inclinar el móvil
+            const handleInspect = (x, y) => {
+                if (isOpened) return;
+                const xAxis = (window.innerWidth / 2 - x) / 25;
+                const yAxis = (window.innerHeight / 2 - y) / 25;
+                container.style.transform = `scale(1) rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+                // Actualizar el brillo según la inclinación para un efecto holográfico extra
+                container.style.filter = `brightness(${1 + Math.abs(xAxis/20)})`;
+            };
+
+            document.addEventListener('mousemove', (e) => {
+                if (focusedContainer.classList.contains('show-focused')) handleInspect(e.pageX, e.pageY);
+            });
+            document.addEventListener('touchmove', (e) => {
+                if (focusedContainer.classList.contains('show-focused')) handleInspect(e.touches[0].clientX, e.touches[0].clientY);
+            });
+
+            // Lógica de Rasgado
+            let isDraggingSeal = false;
+            let startXSeal = 0;
+
+            const startSealDrag = (e) => {
+                if (isOpened) return;
+                isDraggingSeal = true;
+                startXSeal = e.clientX || e.touches[0].clientX;
+            };
+
+            seal.addEventListener('mousedown', startSealDrag);
+            seal.addEventListener('touchstart', startSealDrag);
+
+            window.addEventListener('mouseup', () => isDraggingSeal = false);
+            window.addEventListener('touchend', () => isDraggingSeal = false);
+
+            const moveSealDrag = (e) => {
+                if (!isDraggingSeal || isOpened) return;
+                let currentX = e.clientX || e.touches[0].clientX;
+                let diffX = currentX - startXSeal;
+
+                if (diffX > 0) {
+                    seal.style.transition = 'none';
+                    seal.style.transform = `translateX(${diffX}px) rotate(${diffX / 5}deg)`;
+                }
+
+                // --- UMBRAL DE APERTURA ---
+                if (diffX > 150) {
+                    isOpened = true;
+                    isDraggingSeal = false;
+                    hintText.style.opacity = 0;
+                    
+                    // Centrar de golpe para la animación final
+                    container.style.transform = `scale(1) rotateY(0deg) rotateX(0deg)`;
+                    container.style.filter = `brightness(1)`;
+                    container.classList.add('torn');
+
+                    // Sincronizar con la lluvia de cartas del juego
+                    setTimeout(() => {
+                        flashBlanco.style.opacity = '1';
+                        
+                        setTimeout(() => {
+                            flashBlanco.style.opacity = '0';
+                            focusedContainer.classList.remove('show-focused');
+                            
+                            // Lanza las cartas y pasa al juego
+                            lanzarCartasApertura(() => {
+                                setTimeout(() => prepararJuego(), 400);
+                            });
+                        }, 150);
+                    }, 500); // Tiempo para dejar que el empaque caiga
+                }
+            };
+
+            window.addEventListener('mousemove', moveSealDrag);
+            window.addEventListener('touchmove', moveSealDrag);
+        }
+
+
+        // =====================================================
+        //  CONEXIÓN CARRUSEL <-> JUEGO
+        // =====================================================
+        function mostrarCarrusel() {
+            // Ocultar título y tagline global para inmersión
+            document.getElementById('main-title').style.display = 'none';
+            document.getElementById('main-tagline').style.display = 'none';
+            
+            cambiarPantalla('pantalla-carrusel');
+            
+            // Resetear estados del carrusel
+            isOpened = false;
+            focusedContainer.classList.remove('show-focused');
+            focusedContainer.innerHTML = '';
+            carouselContainer.classList.remove('fade-out');
+            document.querySelector('.btn-volver-carrusel').style.display = 'block';
+            hintText.innerText = "Desliza para elegir tu pack";
+            hintText.style.opacity = 1;
+            
+            if(carousel.innerHTML === '') inicializarCarrusel();
+        }
+
+        function volverACreadorDesdeCarrusel() {
+            document.getElementById('main-title').style.display = 'block';
+            document.getElementById('main-tagline').style.display = 'block';
+            cambiarPantalla('pantalla-creador');
+        }
+
+        // Animación de cartas volando hacia la pantalla
+        function lanzarCartasApertura(callback) {
+            const body = document.body;
+            const n  = Math.min(10, miMazo.length);
             const cx = window.innerWidth  / 2;
             const cy = window.innerHeight / 2;
             const destinos = calcularDestinosGrid(n);
@@ -670,17 +717,14 @@ Aquí tienes el material de estudio:
                 const img = document.createElement('img');
                 img.src = 'detras.png';
                 el.appendChild(img);
-                overlay.appendChild(el);
+                body.appendChild(el); // Añadimos al body para que superponga todo
 
                 const delay = i * 55;
 
                 setTimeout(() => {
-                    // Aparece
                     requestAnimationFrame(() => {
                         el.style.opacity = '1';
-
                         requestAnimationFrame(() => {
-                            // Arco hacia arriba-diagonal
                             const angulo  = (i / n) * Math.PI * 2;
                             const radio   = 160 + Math.random() * 80;
                             const midX    = cx + Math.cos(angulo) * radio;
@@ -692,7 +736,6 @@ Aquí tienes el material de estudio:
                             el.style.left = `${midX - 40}px`;
                             el.style.top  = `${midY - 56}px`;
 
-                            // Cae al destino
                             setTimeout(() => {
                                 const dest = destinos[i];
                                 const rotFin = (Math.random()-0.5) * 20;
@@ -702,7 +745,13 @@ Aquí tienes el material de estudio:
                                 el.style.top  = `${dest.y - 56}px`;
 
                                 completadas++;
-                                if (completadas === n) setTimeout(callback, 280);
+                                if (completadas === n) {
+                                    // Limpiar cartas voladoras y avisar callback
+                                    setTimeout(() => {
+                                        document.querySelectorAll('.carta-volando').forEach(c => c.remove());
+                                        callback();
+                                    }, 280);
+                                }
                             }, 320);
                         });
                     });
@@ -713,10 +762,14 @@ Aquí tienes el material de estudio:
         function calcularDestinosGrid(n) {
             const destinos = [];
             const cols   = Math.ceil(Math.sqrt(n));
-            const cardW  = 100, cardH = 130, gap = 18;
+            // ¡SOLUCIÓN AQUÍ! Dimensiones fijas e inamovibles para evitar estiramientos
+            const cardW  = 130, cardH = 185, gap = 14; 
             const totalW = cols * cardW + (cols - 1) * gap;
-            const startX = (window.innerWidth - totalW) / 2 + cardW / 2;
-            const startY = window.innerHeight * 0.32;
+            
+            const effectiveW = Math.min(totalW, 820);
+            const startX = (window.innerWidth - effectiveW) / 2 + cardW / 2;
+            const startY = 150; // Aproximado header
+            
             for (let i = 0; i < n; i++) {
                 destinos.push({
                     x: startX + (i % cols) * (cardW + gap),
@@ -726,32 +779,88 @@ Aquí tienes el material de estudio:
             return destinos;
         }
 
-        function crearParticulas(overlay) {
-            const colores = ['#ffcb05','#3b4cca','#ffffff','#ff8c00','#7c3aed','#22c55e'];
-            for (let i = 0; i < 35; i++) {
-                const p    = document.createElement('div');
-                p.className = 'particula';
-                const size = Math.random() * 7 + 2;
-                p.style.cssText = `
-                    width:${size}px; height:${size}px;
-                    background:${colores[Math.floor(Math.random()*colores.length)]};
-                    left:${Math.random()*100}%;
-                    animation-duration:${5+Math.random()*7}s;
-                    animation-delay:${Math.random()*5}s;
-                    opacity:0;
-                `;
-                overlay.appendChild(p);
+        // =====================================================
+        //  UTILIDADES ORIGINALES DEL JUEGO
+        // =====================================================
+        function cambiarPantalla(id) {
+            document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
+            document.getElementById(id).classList.add('activa');
+            if (id === 'pantalla-creador') {
+                actualizarUI();
+                document.getElementById('main-title').style.display = 'block';
+                document.getElementById('main-tagline').style.display = 'block';
             }
+        }
+
+        function agregarCarta() {
+            const p = document.getElementById('nueva-pregunta');
+            const r = document.getElementById('nueva-respuesta');
+            if (!p.value.trim() || !r.value.trim()) return alert("Por favor llena ambos campos.");
+            miMazo.push({ pregunta: p.value.trim(), respuesta: r.value.trim() });
+            localStorage.setItem('miMazoEstudio', JSON.stringify(miMazo));
+            p.value = ''; r.value = ''; p.focus();
+            actualizarUI();
+        }
+
+        function borrarMazo() {
+            if (confirm("¿Borrar todas las cartas del mazo?")) {
+                miMazo = []; localStorage.removeItem('miMazoEstudio'); actualizarUI();
+            }
+        }
+
+        function actualizarUI() {
+            document.getElementById('contador-cartas').innerText = miMazo.length;
+            document.getElementById('btn-ir-sobre').disabled = miMazo.length < 1;
+        }
+
+        function exportarMazo() {
+            if (miMazo.length === 0) return alert("El mazo está vacío.");
+            const a = document.createElement('a');
+            a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(miMazo, null, 4));
+            a.download = "mi_mazo_estudio.json"; a.click();
+        }
+
+        document.getElementById('archivo-importar').addEventListener('change', function (e) {
+            const file = e.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (Array.isArray(data) && data[0]?.pregunta) {
+                        miMazo = data;
+                        localStorage.setItem('miMazoEstudio', JSON.stringify(miMazo));
+                        actualizarUI();
+                        alert(`✅ ¡Importado! Se cargaron ${miMazo.length} cartas.`);
+                    } else { alert("❌ El archivo no tiene el formato correcto."); }
+                } catch { alert("❌ Error al leer el archivo. ¿Está bien formateado?"); }
+            };
+            reader.readAsText(file); e.target.value = '';
+        });
+
+        function mostrarTutorial() { document.getElementById('modal-tutorial').classList.add('activo'); }
+        function cerrarTutorial()  { document.getElementById('modal-tutorial').classList.remove('activo'); }
+        document.getElementById('modal-tutorial').addEventListener('click', function(e) { if (e.target === this) cerrarTutorial(); });
+
+        function copiarPrompt() {
+            const texto = document.getElementById('prompt-copiable').innerText;
+            navigator.clipboard.writeText(texto).then(() => {
+                const btn = document.querySelector('.btn-copy');
+                btn.innerText = '✅ ¡Copiado!';
+                setTimeout(() => btn.innerText = '📋 Copiar Prompt', 2000);
+            });
         }
 
         // =====================================================
         //  JUEGO
         // =====================================================
         function prepararJuego() {
+            document.getElementById('main-title').style.display = 'block';
+            document.getElementById('main-tagline').style.display = 'block';
             cambiarPantalla('pantalla-juego');
             document.getElementById('btn-verificar').style.display = 'none';
             const cont = document.getElementById('contenedor-cartas');
             cont.innerHTML = '';
+            // Mezclamos y sacamos máximo 10
             cartasEnJuego = [...miMazo].sort(() => Math.random() - 0.5).slice(0, 10);
 
             cartasEnJuego.forEach((carta, i) => {
@@ -764,6 +873,7 @@ Aquí tienes el material de estudio:
                 const dorso = document.createElement('div');
                 dorso.className = 'carta-dorso';
 
+                // DORSO CON TU IMAGEN detras.png
                 const img = document.createElement('img');
                 img.src = 'detras.png';
                 img.alt = 'Carta';
@@ -834,76 +944,13 @@ Aquí tienes el material de estudio:
         }
 
         // =====================================================
-        //  UTILIDADES
-        // =====================================================
-        function cambiarPantalla(id) {
-            document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
-            document.getElementById(id).classList.add('activa');
-            if (id === 'pantalla-creador') actualizarUI();
-        }
-
-        function agregarCarta() {
-            const p = document.getElementById('nueva-pregunta');
-            const r = document.getElementById('nueva-respuesta');
-            if (!p.value.trim() || !r.value.trim()) return alert("Por favor llena ambos campos.");
-            miMazo.push({ pregunta: p.value.trim(), respuesta: r.value.trim() });
-            localStorage.setItem('miMazoEstudio', JSON.stringify(miMazo));
-            p.value = ''; r.value = ''; p.focus();
-            actualizarUI();
-        }
-
-        function borrarMazo() {
-            if (confirm("¿Borrar todas las cartas del mazo?")) {
-                miMazo = []; localStorage.removeItem('miMazoEstudio'); actualizarUI();
-            }
-        }
-
-        function actualizarUI() {
-            document.getElementById('contador-cartas').innerText = miMazo.length;
-            document.getElementById('btn-ir-sobre').disabled = miMazo.length < 1;
-        }
-
-        function exportarMazo() {
-            if (miMazo.length === 0) return alert("El mazo está vacío.");
-            const a = document.createElement('a');
-            a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(miMazo, null, 4));
-            a.download = "mi_mazo_estudio.json"; a.click();
-        }
-
-        document.getElementById('archivo-importar').addEventListener('change', function (e) {
-            const file = e.target.files[0]; if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    if (Array.isArray(data) && data[0]?.pregunta) {
-                        miMazo = data;
-                        localStorage.setItem('miMazoEstudio', JSON.stringify(miMazo));
-                        actualizarUI();
-                        alert(`✅ ¡Importado! Se cargaron ${miMazo.length} cartas.`);
-                    } else { alert("❌ El archivo no tiene el formato correcto."); }
-                } catch { alert("❌ Error al leer el archivo. ¿Está bien formateado?"); }
-            };
-            reader.readAsText(file); e.target.value = '';
-        });
-
-        function mostrarTutorial() { document.getElementById('modal-tutorial').classList.add('activo'); }
-        function cerrarTutorial()  { document.getElementById('modal-tutorial').classList.remove('activo'); }
-        document.getElementById('modal-tutorial').addEventListener('click', function(e) { if (e.target === this) cerrarTutorial(); });
-
-        function copiarPrompt() {
-            const texto = document.getElementById('prompt-copiable').innerText;
-            navigator.clipboard.writeText(texto).then(() => {
-                const btn = document.querySelector('.btn-copy');
-                btn.innerText = '✅ ¡Copiado!';
-                setTimeout(() => btn.innerText = '📋 Copiar Prompt', 2000);
-            });
-        }
-
-        // =====================================================
-        //  EVALUACIÓN
+        //  EVALUACIÓN CON IA Y PDF
         // =====================================================
         async function verificarEnServidor() {
+            // Reaparecer título para resultados
+            document.getElementById('main-title').style.display = 'block';
+            document.getElementById('main-tagline').style.display = 'block';
+            
             cambiarPantalla('pantalla-resultados');
             document.getElementById('loading-groq').style.display = 'flex';
             document.getElementById('contenido-resultados').style.display = 'none';
@@ -915,6 +962,8 @@ Aquí tienes el material de estudio:
             }));
 
             try {
+                // Esta ruta requiere el backend de Vercel configurado. 
+                // Si lo estás probando en local sin el backend, fallará y saltará al catch.
                 const response = await fetch('/api/evaluar', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ evaluaciones: payload })
@@ -941,10 +990,11 @@ Aquí tienes el material de estudio:
                 });
                 mostrarPuntuacion(correctas, cartasEnJuego.length);
             } catch (error) {
-                listaDiv.innerHTML = `<div class="resultado-item incorrecto">❌ Error: ${error.message}<br><br><small style="color:var(--text-muted);">La evaluación con IA requiere el backend de Vercel.</small></div>`;
+                // Mensaje detallado para cuando falla el backend
+                listaDiv.innerHTML = `<div class="resultado-item incorrecto">❌ Error: ${error.message}<br><br><small style="color:var(--text-muted);">La evaluación inteligente con IA requiere el backend configurado. Si estás probando esto como un archivo HTML estático, esta función no se conectará. Verificalo en el entorno de despliegue final.</small></div>`;
                 document.getElementById('titulo-resultado').innerText = "ERROR";
                 document.getElementById('titulo-resultado').style.color = 'var(--danger)';
-                document.getElementById('subtitulo-resultado').innerText = "No se pudo conectar al servidor.";
+                document.getElementById('subtitulo-resultado').innerText = "No se pudo conectar al servidor de evaluación.";
                 document.getElementById('badge-ronda').innerText = "";
             }
             document.getElementById('loading-groq').style.display = 'none';
@@ -962,7 +1012,7 @@ Aquí tienes el material de estudio:
         }
 
         // =====================================================
-        //  PDF
+        //  GENERACIÓN DE PDF (jspdf)
         // =====================================================
         function descargarPDF() {
             const { jsPDF } = window.jspdf;
@@ -1031,8 +1081,10 @@ Aquí tienes el material de estudio:
                 y += 6;
             }
 
+            // Primero las incorrectas para repasar, luego las correctas
             renderSeccion(ultimosResultados.filter(r=>!r.esCorrecta), false);
             renderSeccion(ultimosResultados.filter(r=> r.esCorrecta), true);
+            
             doc.setFillColor(...grisMed); doc.rect(0,287,210,10,'F');
             doc.setFont('helvetica','italic'); doc.setFontSize(7); doc.setTextColor(...grisTxt);
             doc.text('Generado por TCG Study · ¡Sigue estudiando!', 105, 293, {align:'center'});
