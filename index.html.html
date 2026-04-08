@@ -16,7 +16,6 @@
             --primary: #ffcb05;
             --primary-dark: #c7a008;
             --accent: #3b4cca;
-            --accent2: #7c3aed;
             --text-light: #f0f0f0;
             --text-muted: #888;
             --danger: #ef4444;
@@ -29,8 +28,9 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
-            background-image: radial-gradient(ellipse at 20% 50%, rgba(59,76,202,0.07) 0%, transparent 60%),
-                              radial-gradient(ellipse at 80% 20%, rgba(255,203,5,0.05) 0%, transparent 50%);
+            background-image:
+                radial-gradient(ellipse at 20% 50%, rgba(59,76,202,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(255,203,5,0.05) 0%, transparent 50%);
             color: var(--text-light);
             display: flex; flex-direction: column; align-items: center;
             min-height: 100vh; padding: 20px; overflow-x: hidden;
@@ -67,7 +67,7 @@
         .pantalla.activa { display: flex; animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Panel creador */
+        /* ===== PANEL CREADOR ===== */
         .panel-creador {
             background: var(--card-bg); padding: 28px; border-radius: 18px;
             border: 1.5px solid var(--border); width: 100%;
@@ -79,77 +79,15 @@
         .mini-btn {
             background: var(--surface); color: #ccc; border: 1.5px solid var(--border);
             padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 0.82rem;
-            font-family: 'Inter', sans-serif; font-weight: 600;
-            transition: all 0.2s;
+            font-family: 'Inter', sans-serif; font-weight: 600; transition: all 0.2s;
         }
         .mini-btn:hover { background: #2a2a35; color: white; border-color: var(--primary); }
         .mini-btn.danger { color: var(--danger); border-color: #3a1a1a; }
         .mini-btn.danger:hover { background: #3a1a1a; border-color: var(--danger); }
         input[type="file"] { display: none; }
-
         hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
 
-        /* Tutorial Modal */
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.88); justify-content: center; align-items: center;
-            z-index: 200; backdrop-filter: blur(6px);
-        }
-        .modal-overlay.activo { display: flex; }
-        .modal-content {
-            background: var(--card-bg); padding: 32px; border-radius: 18px;
-            border: 2px solid var(--primary); width: 92%; max-width: 620px;
-            max-height: 85vh; overflow-y: auto;
-            animation: popModal 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards;
-        }
-        @keyframes popModal { from { transform: scale(0.85); opacity:0; } to { transform: scale(1); opacity:1; } }
-        .modal-content h2 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; color: var(--primary); font-size: 1.8rem; margin-bottom: 16px; }
-        .modal-content h3 { color: var(--primary); margin: 18px 0 8px; font-size: 1rem; }
-
-        /* Tutorial pasos */
-        .paso {
-            background: var(--surface); border-radius: 12px; padding: 16px 18px;
-            margin-bottom: 14px; border-left: 4px solid var(--accent);
-            position: relative;
-        }
-        .paso-num {
-            display: inline-flex; align-items: center; justify-content: center;
-            width: 26px; height: 26px; background: var(--accent); border-radius: 50%;
-            font-size: 0.8rem; font-weight: 700; margin-right: 10px; flex-shrink: 0;
-        }
-        .paso-titulo { display: flex; align-items: center; font-weight: 700; margin-bottom: 8px; }
-        .paso p { color: #bbb; font-size: 0.88rem; line-height: 1.6; margin-left: 36px; }
-
-        code {
-            background: #0d0d0f; color: var(--primary); padding: 2px 7px;
-            border-radius: 5px; font-size: 0.83rem; font-family: 'Courier New', monospace;
-        }
-        .code-block {
-            background: #0d0d0f; color: #a8ff78; padding: 14px; border-radius: 10px;
-            font-size: 0.78rem; font-family: 'Courier New', monospace; overflow-x: auto;
-            margin: 10px 0; border: 1px solid #2a2a35; white-space: pre; line-height: 1.6;
-        }
-        .tip {
-            background: rgba(255,203,5,0.08); border: 1px solid rgba(255,203,5,0.2);
-            border-radius: 10px; padding: 12px 16px; font-size: 0.85rem; color: #ddd;
-            margin-top: 14px;
-        }
-        .tip strong { color: var(--primary); }
-
-        /* Prompt copiable */
-        .prompt-box {
-            background: #0d0d0f; border: 1.5px solid var(--accent); border-radius: 10px;
-            padding: 14px; font-size: 0.78rem; color: #ccc; font-family: 'Courier New', monospace;
-            line-height: 1.6; white-space: pre-wrap; max-height: 200px; overflow-y: auto; margin: 10px 0;
-        }
-        .btn-copy {
-            background: var(--accent); color: white; border: none; padding: 6px 14px;
-            border-radius: 7px; cursor: pointer; font-size: 0.8rem; font-weight: 700;
-            font-family: 'Inter', sans-serif; margin-top: 6px; transition: background 0.2s;
-        }
-        .btn-copy:hover { background: #2f3da0; }
-
-        /* Sobre animado */
+        /* ===== SOBRE (pantalla selección) ===== */
         .contenedor-sobre { perspective: 1000px; margin-top: 40px; cursor: pointer; }
         .sobre {
             width: 230px; height: 320px;
@@ -170,76 +108,289 @@
         .sobre h2 { font-family: 'Bebas Neue', sans-serif; color: var(--primary); font-size: 2.5rem; letter-spacing: 4px; z-index: 1; }
         .sobre p { color: rgba(255,255,255,0.7); font-size: 0.8rem; letter-spacing: 3px; font-weight: 600; z-index: 1; }
 
-        /* Cartas */
-        .grid-cartas { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 14px; width: 100%; margin-top: 20px; }
-        .carta {
-            height: 185px; background: linear-gradient(145deg, #1e1e26, #16161a);
-            border: 2px solid #2a2a35; border-radius: 14px; cursor: pointer;
-            display: flex; justify-content: center; align-items: center;
-            font-size: 2.5rem; box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-            opacity: 0; transform: translateY(40px) rotateY(90deg);
-            animation: cartaAparece 0.5s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+        /* ===== OVERLAY ANIMACIÓN APERTURA ===== */
+        #overlay-apertura {
+            display: none;
+            position: fixed; inset: 0;
+            background: radial-gradient(ellipse at center, #070714 0%, #000005 100%);
+            z-index: 999;
+            overflow: hidden;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
-        @keyframes cartaAparece { to { opacity: 1; transform: translateY(0) rotateY(0); } }
-        .carta:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: 0 16px 40px rgba(255,203,5,0.2); }
-        .carta.respondida { background: linear-gradient(145deg, #1a3a1a, #0d2010); border-color: var(--success); font-size: 2rem; }
+        #overlay-apertura.activo { display: flex; }
 
-        /* Modal respuesta */
-        .modal-resp { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.88); justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(5px); }
-        .modal-resp-content {
-            background: var(--card-bg); padding: 30px; border-radius: 18px;
-            border: 2px solid var(--primary); width: 90%; max-width: 500px; text-align: center;
-            animation: popModal 0.3s forwards;
+        /* Rayos de luz giratorios */
+        #rayos {
+            position: absolute; inset: 0;
+            opacity: 0;
+            background: conic-gradient(
+                from 0deg at 50% 50%,
+                transparent 0deg, rgba(59,76,202,0.18) 8deg, transparent 16deg,
+                rgba(255,203,5,0.12) 24deg, transparent 32deg,
+                rgba(59,76,202,0.18) 40deg, transparent 48deg,
+                rgba(255,203,5,0.12) 56deg, transparent 64deg,
+                rgba(59,76,202,0.18) 72deg, transparent 80deg,
+                rgba(255,203,5,0.12) 88deg, transparent 96deg,
+                rgba(59,76,202,0.18) 104deg, transparent 112deg,
+                rgba(255,203,5,0.12) 120deg, transparent 128deg,
+                rgba(59,76,202,0.18) 136deg, transparent 144deg,
+                rgba(255,203,5,0.12) 152deg, transparent 160deg,
+                rgba(59,76,202,0.18) 168deg, transparent 176deg,
+                rgba(255,203,5,0.12) 184deg, transparent 192deg,
+                rgba(59,76,202,0.18) 200deg, transparent 208deg,
+                rgba(255,203,5,0.12) 216deg, transparent 224deg,
+                rgba(59,76,202,0.18) 232deg, transparent 240deg,
+                rgba(255,203,5,0.12) 248deg, transparent 256deg,
+                rgba(59,76,202,0.18) 264deg, transparent 272deg,
+                rgba(255,203,5,0.12) 280deg, transparent 288deg,
+                rgba(59,76,202,0.18) 296deg, transparent 304deg,
+                rgba(255,203,5,0.12) 312deg, transparent 320deg,
+                rgba(59,76,202,0.18) 328deg, transparent 336deg,
+                rgba(255,203,5,0.12) 344deg, transparent 352deg,
+                rgba(59,76,202,0.18) 360deg
+            );
+            animation: girarRayos 10s linear infinite;
+            pointer-events: none;
         }
+        @keyframes girarRayos { to { transform: rotate(360deg); } }
+
+        /* Anillo de energía */
+        #anillo {
+            position: absolute;
+            width: 300px; height: 300px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,203,5,0.15);
+            box-shadow: 0 0 30px rgba(59,76,202,0.2), inset 0 0 30px rgba(59,76,202,0.1);
+            animation: pulsarAnillo 2s ease-in-out infinite;
+            pointer-events: none;
+            opacity: 0;
+        }
+        @keyframes pulsarAnillo {
+            0%,100% { transform: scale(1); opacity: 0.3; }
+            50%      { transform: scale(1.15); opacity: 0.7; }
+        }
+
+        /* Flash blanco al explotar */
+        #flash {
+            position: absolute; inset: 0;
+            background: white; opacity: 0;
+            pointer-events: none; z-index: 20;
+        }
+
+        /* Partículas flotantes */
+        .particula {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particulaFlotando linear infinite;
+        }
+        @keyframes particulaFlotando {
+            0%   { transform: translateY(110vh) rotate(0deg) scale(0); opacity: 0; }
+            5%   { opacity: 1; transform: translateY(90vh) rotate(30deg) scale(1); }
+            95%  { opacity: 0.6; }
+            100% { transform: translateY(-10vh) rotate(720deg) scale(0.5); opacity: 0; }
+        }
+
+        /* Sobre en la animación */
+        #sobre-animado {
+            position: relative; z-index: 10;
+            width: 200px; height: 280px;
+            background: linear-gradient(145deg, #1a237e, #3b4cca, #311b92);
+            border: 4px solid #ffcb05; border-radius: 18px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            box-shadow: 0 0 40px rgba(59,76,202,0.7), 0 0 80px rgba(255,203,5,0.25);
+            overflow: hidden;
+            transform: scale(0) rotate(-20deg); opacity: 0;
+        }
+        #sobre-animado::before {
+            content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: brillo 2s infinite;
+        }
+        #sobre-animado h2 { font-family: 'Bebas Neue', sans-serif; color: #ffcb05; font-size: 2rem; letter-spacing: 3px; z-index: 1; }
+        #sobre-animado p  { color: rgba(255,255,255,0.7); font-size: 0.75rem; letter-spacing: 3px; font-weight: 600; z-index: 1; }
+
+        /* Texto de instrucción */
+        #texto-instruccion {
+            position: relative; z-index: 10;
+            color: rgba(255,255,255,0.55);
+            font-size: 0.78rem; letter-spacing: 3px; text-transform: uppercase;
+            margin-top: 30px; opacity: 0;
+            animation: parpadeo 1.5s ease-in-out infinite;
+        }
+        @keyframes parpadeo { 0%,100%{opacity:0.2} 50%{opacity:0.9} }
+
+        /* Cartas volando durante la animación */
+        .carta-volando {
+            position: absolute; z-index: 15;
+            width: 80px; height: 112px;
+            border-radius: 10px;
+            border: 2px solid #ffcb05;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 20px rgba(255,203,5,0.3);
+            pointer-events: none;
+        }
+        .carta-volando img {
+            width: 100%; height: 100%;
+            object-fit: cover; display: block; border-radius: 8px;
+        }
+
+        /* ===== GRILLA DE CARTAS EN JUEGO ===== */
+        .grid-cartas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 14px; width: 100%; margin-top: 20px;
+        }
+
+        .carta-wrapper {
+            height: 185px;
+            perspective: 500px;
+            cursor: pointer;
+            opacity: 0;
+        }
+        .carta-wrapper.apareciendo {
+            animation: cartaAterrizando 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes cartaAterrizando {
+            0%   { opacity: 0; transform: translateY(-70px) rotateX(55deg) scale(0.65); }
+            55%  { opacity: 1; transform: translateY(6px) rotateX(-4deg) scale(1.05); }
+            78%  { transform: translateY(-3px) rotateX(1deg) scale(0.99); }
+            100% { opacity: 1; transform: translateY(0) rotateX(0) scale(1); }
+        }
+
+        .carta-inner {
+            width: 100%; height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            border-radius: 12px;
+            transition: box-shadow 0.25s, transform 0.1s ease-out;
+        }
+        .carta-wrapper:hover:not(.respondida) .carta-inner {
+            box-shadow: 0 20px 45px rgba(255,203,5,0.3);
+        }
+
+        /* Dorso con detras.png */
+        .carta-dorso {
+            width: 100%; height: 100%;
+            border-radius: 12px;
+            border: 2px solid #2a2a35;
+            overflow: hidden;
+            position: relative;
+            transition: border-color 0.25s;
+        }
+        .carta-dorso img {
+            width: 100%; height: 100%;
+            object-fit: cover; display: block; border-radius: 10px;
+            pointer-events: none; user-select: none;
+        }
+        /* Brillo holográfico sobre la imagen */
+        .carta-dorso .holo {
+            position: absolute; inset: 0; border-radius: 10px;
+            background: linear-gradient(
+                135deg,
+                transparent 25%,
+                rgba(255,255,255,0.05) 45%,
+                rgba(255,203,5,0.07) 50%,
+                rgba(59,76,202,0.07) 55%,
+                transparent 75%
+            );
+            pointer-events: none;
+            transition: background 0.2s;
+        }
+        .carta-wrapper:hover:not(.respondida) .carta-dorso { border-color: var(--primary); }
+        .carta-wrapper:hover:not(.respondida) .carta-dorso .holo {
+            background: linear-gradient(
+                135deg,
+                transparent 15%,
+                rgba(255,255,255,0.12) 40%,
+                rgba(255,203,5,0.14) 50%,
+                rgba(59,76,202,0.12) 60%,
+                transparent 85%
+            );
+        }
+
+        /* Estado respondida */
+        .carta-wrapper.respondida .carta-dorso {
+            border-color: var(--success);
+        }
+        .carta-wrapper.respondida .carta-dorso img {
+            filter: brightness(0.45) saturate(0.3);
+        }
+        .check-overlay {
+            display: none; position: absolute; inset: 0;
+            justify-content: center; align-items: center;
+            font-size: 3rem; border-radius: 10px;
+            background: rgba(0,0,0,0.3); pointer-events: none; z-index: 2;
+        }
+        .carta-wrapper.respondida .check-overlay { display: flex; }
+
+        /* ===== MODALES ===== */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.88); justify-content: center; align-items: center;
+            z-index: 200; backdrop-filter: blur(6px);
+        }
+        .modal-overlay.activo { display: flex; }
+        .modal-content {
+            background: var(--card-bg); padding: 32px; border-radius: 18px;
+            border: 2px solid var(--primary); width: 92%; max-width: 620px;
+            max-height: 85vh; overflow-y: auto;
+            animation: popModal 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards;
+        }
+        @keyframes popModal { from { transform: scale(0.85); opacity:0; } to { transform: scale(1); opacity:1; } }
+        .modal-content h2 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; color: var(--primary); font-size: 1.8rem; margin-bottom: 16px; }
+        .modal-content h3 { color: var(--primary); margin: 18px 0 8px; font-size: 1rem; }
+        .paso { background: var(--surface); border-radius: 12px; padding: 16px 18px; margin-bottom: 14px; border-left: 4px solid var(--accent); }
+        .paso-num { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; background: var(--accent); border-radius: 50%; font-size: 0.8rem; font-weight: 700; margin-right: 10px; flex-shrink: 0; }
+        .paso-titulo { display: flex; align-items: center; font-weight: 700; margin-bottom: 8px; }
+        .paso p { color: #bbb; font-size: 0.88rem; line-height: 1.6; margin-left: 36px; }
+        code { background: #0d0d0f; color: var(--primary); padding: 2px 7px; border-radius: 5px; font-size: 0.83rem; font-family: 'Courier New', monospace; }
+        .code-block { background: #0d0d0f; color: #a8ff78; padding: 14px; border-radius: 10px; font-size: 0.78rem; font-family: 'Courier New', monospace; overflow-x: auto; margin: 10px 0; border: 1px solid #2a2a35; white-space: pre; line-height: 1.6; }
+        .tip { background: rgba(255,203,5,0.08); border: 1px solid rgba(255,203,5,0.2); border-radius: 10px; padding: 12px 16px; font-size: 0.85rem; color: #ddd; margin-top: 14px; }
+        .tip strong { color: var(--primary); }
+        .prompt-box { background: #0d0d0f; border: 1.5px solid var(--accent); border-radius: 10px; padding: 14px; font-size: 0.78rem; color: #ccc; font-family: 'Courier New', monospace; line-height: 1.6; white-space: pre-wrap; max-height: 200px; overflow-y: auto; margin: 10px 0; }
+        .btn-copy { background: var(--accent); color: white; border: none; padding: 6px 14px; border-radius: 7px; cursor: pointer; font-size: 0.8rem; font-weight: 700; font-family: 'Inter', sans-serif; margin-top: 6px; transition: background 0.2s; }
+        .btn-copy:hover { background: #2f3da0; }
+
+        .modal-resp { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.88); justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(5px); }
+        .modal-resp-content { background: var(--card-bg); padding: 30px; border-radius: 18px; border: 2px solid var(--primary); width: 90%; max-width: 500px; text-align: center; animation: popModal 0.3s forwards; }
         .modal-resp-content h3 { color: var(--primary); margin-bottom: 16px; font-size: 1.2rem; line-height: 1.5; }
 
         /* Resultados */
-        .resultado-item {
-            width: 100%; padding: 18px; margin-bottom: 14px; border-radius: 12px;
-            background: var(--surface); display: flex; flex-direction: column;
-            text-align: left; border: 1.5px solid var(--border);
-        }
-        .correcto { border-left: 5px solid var(--success); border-color: var(--border); }
-        .incorrecto { border-left: 5px solid var(--danger); border-color: var(--border); }
+        .resultado-item { width: 100%; padding: 18px; margin-bottom: 14px; border-radius: 12px; background: var(--surface); display: flex; flex-direction: column; text-align: left; border: 1.5px solid var(--border); }
+        .correcto { border-left: 5px solid var(--success); }
+        .incorrecto { border-left: 5px solid var(--danger); }
         .resultado-item .etiqueta { font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
         .correcto .etiqueta { color: var(--success); }
         .incorrecto .etiqueta { color: var(--danger); }
-
         #loading-groq { display: none; flex-direction: column; align-items: center; margin: 60px 0; }
-        .spinner {
-            width: 52px; height: 52px; border: 4px solid rgba(255,203,5,0.15);
-            border-radius: 50%; border-top-color: var(--primary);
-            animation: spin 0.9s ease-in-out infinite;
-        }
+        .spinner { width: 52px; height: 52px; border: 4px solid rgba(255,203,5,0.15); border-radius: 50%; border-top-color: var(--primary); animation: spin 0.9s ease-in-out infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Botón PDF */
-        .btn-pdf {
-            background: linear-gradient(135deg, #1a237e, var(--accent));
-            color: white; border: 2px solid rgba(255,255,255,0.15);
-            padding: 14px 28px; font-size: 1rem; border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(59,76,202,0.4);
-        }
+        .btn-pdf { background: linear-gradient(135deg, #1a237e, var(--accent)); color: white; border: 2px solid rgba(255,255,255,0.15); padding: 14px 28px; font-size: 1rem; border-radius: 12px; box-shadow: 0 8px 25px rgba(59,76,202,0.4); }
         .btn-pdf:hover { background: linear-gradient(135deg, #2535a0, #4a5cf0); box-shadow: 0 12px 35px rgba(59,76,202,0.6); }
-
-        .score-badge {
-            font-family: 'Bebas Neue', sans-serif; font-size: 5rem;
-            line-height: 1; letter-spacing: 2px;
-        }
+        .score-badge { font-family: 'Bebas Neue', sans-serif; font-size: 5rem; line-height: 1; letter-spacing: 2px; }
         .botones-resultado { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 24px; }
-
-        .badge-info {
-            display: inline-block; background: var(--surface); border: 1px solid var(--border);
-            border-radius: 20px; padding: 4px 12px; font-size: 0.78rem; color: var(--text-muted);
-            margin-bottom: 20px;
-        }
+        .badge-info { display: inline-block; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
     <h1>📚 TCG STUDY</h1>
     <p class="tagline">Memoriza como un campeón</p>
+
+    <!-- ===== OVERLAY ANIMACIÓN APERTURA ===== -->
+    <div id="overlay-apertura">
+        <div id="rayos"></div>
+        <div id="anillo"></div>
+        <div id="flash"></div>
+        <div id="sobre-animado">
+            <h2>PACK</h2>
+            <p>DE ESTUDIO</p>
+        </div>
+        <p id="texto-instruccion">Haz clic para abrir</p>
+    </div>
 
     <!-- ===== PANTALLA CREADOR ===== -->
     <div id="pantalla-creador" class="pantalla activa">
@@ -248,11 +399,9 @@
             <input type="text" id="nueva-pregunta" placeholder="Ej: ¿Qué hace el comando SELECT en SQL?">
             <input type="text" id="nueva-respuesta" placeholder="Ej: Recupera datos de una base de datos.">
             <button onclick="agregarCarta()" style="width:100%; padding: 14px; font-size:1rem;">➕ Agregar Carta</button>
-            
             <h3 style="margin-top: 18px; color: var(--text-muted); font-size: 0.9rem; text-align: center; font-weight: 400;">
                 Cartas en tu mazo: <span id="contador-cartas" style="color: var(--primary); font-weight: 700; font-size: 1.1rem;">0</span>
             </h3>
-            
             <div class="mini-controles">
                 <button class="mini-btn" onclick="document.getElementById('archivo-importar').click()">📥 Importar JSON</button>
                 <input type="file" id="archivo-importar" accept=".json">
@@ -260,9 +409,8 @@
                 <button class="mini-btn" onclick="mostrarTutorial()">❓ ¿Cómo crear JSON con IA?</button>
                 <button class="mini-btn danger" onclick="borrarMazo()">🗑️ Borrar todo</button>
             </div>
-            
             <hr>
-            <button id="btn-ir-sobre" onclick="cambiarPantalla('pantalla-sobre')" disabled style="font-size: 1.1rem; padding: 16px; width: 100%; border-radius: 12px;">
+            <button id="btn-ir-sobre" onclick="iniciarAnimacionApertura()" disabled style="font-size: 1.1rem; padding: 16px; width: 100%; border-radius: 12px;">
                 🎁 ¡Jugar Mazo!
             </button>
         </div>
@@ -272,7 +420,7 @@
     <div id="pantalla-sobre" class="pantalla">
         <h2 style="font-family:'Bebas Neue',sans-serif; font-size:2rem; letter-spacing:3px; color:var(--primary);">¡Tu Pack está listo!</h2>
         <p style="color: var(--text-muted); margin-bottom: 10px;">Haz clic en el sobre para sacar tus cartas al azar.</p>
-        <div class="contenedor-sobre" onclick="abrirSobre()">
+        <div class="contenedor-sobre" onclick="iniciarAnimacionApertura()">
             <div class="sobre">
                 <h2>PACK</h2>
                 <p>DE ESTUDIO</p>
@@ -304,11 +452,8 @@
     <!-- ===== MODAL TUTORIAL ===== -->
     <div class="modal-overlay" id="modal-tutorial">
         <div class="modal-content">
-            <h2>🤖 Crear tarjetas con IA</h2>
-            <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 20px;">
-                Sigue estos pasos para convertir cualquier texto o apunte en un mazo importable.
-            </p>
-
+            <h2>🤖 Crear cartas con IA</h2>
+            <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 20px;">Sigue estos pasos para convertir cualquier texto o apunte en un mazo importable.</p>
             <div class="paso">
                 <div class="paso-titulo"><span class="paso-num">1</span> Copia el Prompt de IA</div>
                 <p>Este prompt le indica a cualquier IA (ChatGPT, Gemini, Claude, etc.) que te genere las tarjetas en el formato correcto.</p>
@@ -333,30 +478,24 @@ Aquí tienes el material de estudio:
 [PEGA AQUÍ TU TEXTO O APUNTES]</div>
                 <button class="btn-copy" onclick="copiarPrompt()">📋 Copiar Prompt</button>
             </div>
-
             <div class="paso">
                 <div class="paso-titulo"><span class="paso-num">2</span> Pégalo en una IA y añade tu texto</div>
                 <p>Ve a ChatGPT, Gemini o Claude. Pega el prompt, reemplaza <code>[PEGA AQUÍ TU TEXTO...]</code> con tus apuntes y envía el mensaje. La IA te devolverá una lista de corchetes <code>[...]</code> con preguntas y respuestas.</p>
             </div>
-
             <div class="paso">
                 <div class="paso-titulo"><span class="paso-num">3</span> Guarda la respuesta como archivo .json</div>
                 <p>Aquí viene la parte clave. Tienes dos opciones:</p>
                 <h3>🅐 En computadora (fácil)</h3>
-                <p>
-                    Selecciona <strong>toda</strong> la respuesta de la IA (desde el primer <code>[</code> hasta el último <code>]</code>). Abre el <strong>Bloc de notas</strong> (Windows) o <strong>TextEdit</strong> (Mac), pégala ahí. Luego guarda el archivo eligiendo el nombre <code>mimazo.json</code>. <strong>¡Importante!</strong> En Windows, pon el nombre entre comillas: <code>"mimazo.json"</code> para que no se guarde como .txt.
-                </p>
+                <p>Selecciona <strong>toda</strong> la respuesta de la IA (desde el primer <code>[</code> hasta el último <code>]</code>). Abre el <strong>Bloc de notas</strong> (Windows) o <strong>TextEdit</strong> (Mac), pégala ahí. Guarda el archivo con el nombre <code>mimazo.json</code>. <strong>¡Importante!</strong> En Windows, pon el nombre entre comillas: <code>"mimazo.json"</code> para que no se guarde como .txt.</p>
                 <h3>🅑 Usando el método directo</h3>
                 <p>Muchas IAs tienen un botón para copiar el código. Copia el resultado, pégalo en <a href="https://jsoneditoronline.org" target="_blank" style="color:var(--primary);">jsoneditoronline.org</a> y descarga el archivo desde ahí.</p>
             </div>
-
             <div class="paso">
                 <div class="paso-titulo"><span class="paso-num">4</span> Importa el archivo aquí</div>
                 <p>Vuelve a TCG Study, haz clic en <strong>📥 Importar JSON</strong> y selecciona el archivo <code>mimazo.json</code> que guardaste. ¡Listo! Tus cartas aparecerán automáticamente.</p>
             </div>
-
             <div class="tip">
-                <strong>💡 Tip:</strong> El archivo JSON se ve así por dentro. No te preocupes si no lo entiendes, la IA lo genera automáticamente:
+                <strong>💡 Tip:</strong> El archivo JSON se ve así por dentro:
                 <div class="code-block">[
   {
     "pregunta": "¿Qué es una base de datos?",
@@ -368,7 +507,6 @@ Aquí tienes el material de estudio:
   }
 ]</div>
             </div>
-
             <div style="text-align: center; margin-top: 24px;">
                 <button onclick="cerrarTutorial()" style="font-size: 1rem; padding: 13px 30px; border-radius: 12px;">✅ ¡Entendido!</button>
             </div>
@@ -382,17 +520,14 @@ Aquí tienes el material de estudio:
             <h3 style="color: var(--primary); margin-top: 18px; font-family:'Bebas Neue',sans-serif; letter-spacing:2px; font-size:1.8rem;">Evaluando con IA...</h3>
             <p style="color: var(--text-muted); margin-top: 8px; font-size: 0.9rem;">Verificando conceptos de forma inteligente.</p>
         </div>
-
         <div id="contenido-resultados" style="display: none; width: 100%; text-align: center;">
             <div class="score-badge" id="titulo-resultado"></div>
             <p id="subtitulo-resultado" style="color: var(--text-muted); margin: 8px 0 4px;"></p>
             <span class="badge-info" id="badge-ronda"></span>
-
             <div id="lista-resultados" style="width: 100%; margin-top: 10px;"></div>
-
             <div class="botones-resultado">
                 <button class="btn-pdf" onclick="descargarPDF()">📄 Descargar PDF de Resultados</button>
-                <button onclick="cambiarPantalla('pantalla-sobre')" style="font-size: 0.95rem; padding: 13px 22px;">🔁 Otro sobre</button>
+                <button onclick="iniciarAnimacionApertura()" style="font-size: 0.95rem; padding: 13px 22px;">🔁 Otro sobre</button>
                 <button onclick="cambiarPantalla('pantalla-creador')" style="background: var(--surface); color: #ccc; border: 1px solid var(--border); font-size: 0.9rem; padding: 13px 22px;">← Volver al creador</button>
             </div>
         </div>
@@ -404,6 +539,303 @@ Aquí tienes el material de estudio:
         let cartaActualIndex = null;
         let ultimosResultados = [];
 
+        // =====================================================
+        //  ANIMACIÓN ÉPICA DE APERTURA DE SOBRE
+        // =====================================================
+        function iniciarAnimacionApertura() {
+            const overlay   = document.getElementById('overlay-apertura');
+            const sobreEl   = document.getElementById('sobre-animado');
+            const rayosEl   = document.getElementById('rayos');
+            const anilloEl  = document.getElementById('anillo');
+            const instrucEl = document.getElementById('texto-instruccion');
+            const flashEl   = document.getElementById('flash');
+
+            // Limpiar restos anteriores
+            overlay.querySelectorAll('.particula, .carta-volando').forEach(el => el.remove());
+
+            // Mostrar overlay
+            overlay.classList.add('activo');
+
+            // Reset estado inicial
+            sobreEl.style.transition = 'none';
+            sobreEl.style.transform  = 'scale(0) rotate(-20deg)';
+            sobreEl.style.opacity    = '0';
+            rayosEl.style.transition = 'none';
+            rayosEl.style.opacity    = '0';
+            anilloEl.style.opacity   = '0';
+            instrucEl.style.opacity  = '0';
+            flashEl.style.opacity    = '0';
+            flashEl.style.transition = 'none';
+
+            // Crear partículas de ambiente
+            crearParticulas(overlay);
+
+            // — FASE 1: Sobre entra con bounce (100ms) —
+            setTimeout(() => {
+                sobreEl.style.transition = 'transform 0.65s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s ease';
+                sobreEl.style.transform  = 'scale(1) rotate(0deg)';
+                sobreEl.style.opacity    = '1';
+            }, 120);
+
+            // — FASE 2: Rayos y anillo aparecen (600ms) —
+            setTimeout(() => {
+                rayosEl.style.transition = 'opacity 0.5s ease';
+                rayosEl.style.opacity    = '0.8';
+                anilloEl.style.transition= 'opacity 0.5s ease';
+                anilloEl.style.opacity   = '1';
+            }, 600);
+
+            // — FASE 3: Sobre tiembla (anticipación) (1100ms) —
+            setTimeout(() => {
+                sobreEl.style.transition = 'none';
+                let t = 0;
+                const vibrar = setInterval(() => {
+                    const dx = (Math.random() - 0.5) * 16;
+                    const dy = (Math.random() - 0.5) * 8;
+                    const dr = (Math.random() - 0.5) * 10;
+                    sobreEl.style.transform = `translate(${dx}px,${dy}px) rotate(${dr}deg) scale(1.07)`;
+                    if (++t >= 12) {
+                        clearInterval(vibrar);
+                        sobreEl.style.transition = 'transform 0.3s ease';
+                        sobreEl.style.transform  = 'scale(1) rotate(0deg)';
+                    }
+                }, 75);
+            }, 1100);
+
+            // — FASE 4: Texto "Haz clic" aparece (1500ms) —
+            setTimeout(() => { instrucEl.style.opacity = '1'; }, 1500);
+
+            // — Click handler para explotar —
+            const clickHandler = (e) => {
+                overlay.removeEventListener('click', clickHandler);
+                instrucEl.style.opacity = '0';
+                explotarSobre(sobreEl, flashEl, rayosEl, anilloEl, overlay);
+            };
+            setTimeout(() => overlay.addEventListener('click', clickHandler), 1300);
+        }
+
+        function explotarSobre(sobreEl, flashEl, rayosEl, anilloEl, overlay) {
+            // Pequeño zoom antes de explotar
+            sobreEl.style.transition = 'transform 0.12s ease-in';
+            sobreEl.style.transform  = 'scale(1.18) rotate(3deg)';
+
+            setTimeout(() => {
+                // El sobre desaparece girando
+                sobreEl.style.transition = 'transform 0.28s cubic-bezier(0.55,0,1,0.45), opacity 0.22s ease';
+                sobreEl.style.transform  = 'scale(0) rotate(35deg)';
+                sobreEl.style.opacity    = '0';
+
+                // Flash cegador
+                flashEl.style.opacity    = '1';
+                setTimeout(() => {
+                    flashEl.style.transition = 'opacity 0.6s ease';
+                    flashEl.style.opacity    = '0';
+                }, 60);
+
+                // Rayos y anillo se desvanecen
+                rayosEl.style.transition = 'opacity 0.8s ease';
+                rayosEl.style.opacity    = '0';
+                anilloEl.style.transition= 'opacity 0.8s ease';
+                anilloEl.style.opacity   = '0';
+
+            }, 120);
+
+            // Lanzar cartas desde el centro
+            setTimeout(() => {
+                lanzarCartas(overlay, () => {
+                    setTimeout(() => {
+                        overlay.classList.remove('activo');
+                        prepararJuego();
+                    }, 350);
+                });
+            }, 230);
+        }
+
+        function lanzarCartas(overlay, callback) {
+            const n  = 10; // siempre lanzamos 10 mini-cartas visuales
+            const cx = window.innerWidth  / 2;
+            const cy = window.innerHeight / 2;
+            const destinos = calcularDestinosGrid(n);
+            let completadas = 0;
+
+            for (let i = 0; i < n; i++) {
+                const el = document.createElement('div');
+                el.className = 'carta-volando';
+                el.style.left = `${cx - 40}px`;
+                el.style.top  = `${cy - 56}px`;
+                el.style.transform = `scale(0) rotate(${(Math.random()-0.5)*80}deg)`;
+                el.style.transition = 'none';
+                el.style.opacity = '0';
+
+                const img = document.createElement('img');
+                img.src = 'detras.png';
+                el.appendChild(img);
+                overlay.appendChild(el);
+
+                const delay = i * 55;
+
+                setTimeout(() => {
+                    // Aparece
+                    requestAnimationFrame(() => {
+                        el.style.opacity = '1';
+
+                        requestAnimationFrame(() => {
+                            // Arco hacia arriba-diagonal
+                            const angulo  = (i / n) * Math.PI * 2;
+                            const radio   = 160 + Math.random() * 80;
+                            const midX    = cx + Math.cos(angulo) * radio;
+                            const midY    = cy + Math.sin(angulo) * radio - 120;
+                            const rotMid  = (Math.random()-0.5) * 540;
+
+                            el.style.transition = 'transform 0.32s cubic-bezier(0.25,0.46,0.45,0.94), left 0.32s ease-out, top 0.32s ease-out';
+                            el.style.transform  = `scale(1.3) rotate(${rotMid}deg)`;
+                            el.style.left = `${midX - 40}px`;
+                            el.style.top  = `${midY - 56}px`;
+
+                            // Cae al destino
+                            setTimeout(() => {
+                                const dest = destinos[i];
+                                const rotFin = (Math.random()-0.5) * 20;
+                                el.style.transition = 'transform 0.55s cubic-bezier(0.34,1.35,0.64,1), left 0.55s cubic-bezier(0.34,1.2,0.64,1), top 0.55s cubic-bezier(0.34,1.2,0.64,1)';
+                                el.style.transform  = `scale(0.95) rotate(${rotFin}deg)`;
+                                el.style.left = `${dest.x - 40}px`;
+                                el.style.top  = `${dest.y - 56}px`;
+
+                                completadas++;
+                                if (completadas === n) setTimeout(callback, 280);
+                            }, 320);
+                        });
+                    });
+                }, delay);
+            }
+        }
+
+        function calcularDestinosGrid(n) {
+            const destinos = [];
+            const cols   = Math.ceil(Math.sqrt(n));
+            const cardW  = 100, cardH = 130, gap = 18;
+            const totalW = cols * cardW + (cols - 1) * gap;
+            const startX = (window.innerWidth - totalW) / 2 + cardW / 2;
+            const startY = window.innerHeight * 0.32;
+            for (let i = 0; i < n; i++) {
+                destinos.push({
+                    x: startX + (i % cols) * (cardW + gap),
+                    y: startY + Math.floor(i / cols) * (cardH + gap)
+                });
+            }
+            return destinos;
+        }
+
+        function crearParticulas(overlay) {
+            const colores = ['#ffcb05','#3b4cca','#ffffff','#ff8c00','#7c3aed','#22c55e'];
+            for (let i = 0; i < 35; i++) {
+                const p    = document.createElement('div');
+                p.className = 'particula';
+                const size = Math.random() * 7 + 2;
+                p.style.cssText = `
+                    width:${size}px; height:${size}px;
+                    background:${colores[Math.floor(Math.random()*colores.length)]};
+                    left:${Math.random()*100}%;
+                    animation-duration:${5+Math.random()*7}s;
+                    animation-delay:${Math.random()*5}s;
+                    opacity:0;
+                `;
+                overlay.appendChild(p);
+            }
+        }
+
+        // =====================================================
+        //  JUEGO
+        // =====================================================
+        function prepararJuego() {
+            cambiarPantalla('pantalla-juego');
+            document.getElementById('btn-verificar').style.display = 'none';
+            const cont = document.getElementById('contenedor-cartas');
+            cont.innerHTML = '';
+            cartasEnJuego = [...miMazo].sort(() => Math.random() - 0.5).slice(0, 10);
+
+            cartasEnJuego.forEach((carta, i) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'carta-wrapper';
+
+                const inner = document.createElement('div');
+                inner.className = 'carta-inner';
+
+                const dorso = document.createElement('div');
+                dorso.className = 'carta-dorso';
+
+                const img = document.createElement('img');
+                img.src = 'detras.png';
+                img.alt = 'Carta';
+                img.draggable = false;
+
+                const holo = document.createElement('div');
+                holo.className = 'holo';
+
+                const check = document.createElement('div');
+                check.className = 'check-overlay';
+                check.innerText = '✓';
+
+                dorso.appendChild(img);
+                dorso.appendChild(holo);
+                dorso.appendChild(check);
+                inner.appendChild(dorso);
+                wrapper.appendChild(inner);
+
+                // Efecto tilt 3D con el mouse
+                wrapper.addEventListener('mousemove', (e) => {
+                    if (wrapper.classList.contains('respondida')) return;
+                    const rect = wrapper.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width  - 0.5;
+                    const y = (e.clientY - rect.top)  / rect.height - 0.5;
+                    inner.style.transition = 'transform 0.08s ease';
+                    inner.style.transform  = `rotateY(${x * 22}deg) rotateX(${-y * 22}deg) scale(1.05)`;
+                    // Efecto holográfico que sigue al cursor
+                    holo.style.background = `linear-gradient(
+                        ${135 + x*40}deg,
+                        transparent 20%,
+                        rgba(255,255,255,${0.04 + Math.abs(x)*0.08}) ${40+y*10}%,
+                        rgba(255,203,5,${0.06 + Math.abs(x)*0.1}) 50%,
+                        rgba(59,76,202,${0.06 + Math.abs(y)*0.1}) ${60+y*10}%,
+                        transparent 80%
+                    )`;
+                });
+                wrapper.addEventListener('mouseleave', () => {
+                    inner.style.transition = 'transform 0.4s ease';
+                    inner.style.transform  = 'rotateY(0) rotateX(0) scale(1)';
+                    holo.style.background  = '';
+                });
+
+                wrapper.onclick = () => {
+                    cartaActualIndex = i;
+                    document.getElementById('modal-pregunta').innerText = carta.pregunta;
+                    document.getElementById('input-respuesta').value = carta.respuestaUsuario || '';
+                    document.getElementById('modal').style.display = 'flex';
+                    setTimeout(() => document.getElementById('input-respuesta').focus(), 100);
+                };
+
+                carta.elementoVisual  = wrapper;
+                carta.respuestaUsuario = null;
+                cont.appendChild(wrapper);
+
+                // Entrada escalonada
+                setTimeout(() => wrapper.classList.add('apareciendo'), i * 90);
+            });
+        }
+
+        function guardarRespuesta() {
+            const resp = document.getElementById('input-respuesta').value;
+            if (!resp.trim()) return;
+            cartasEnJuego[cartaActualIndex].respuestaUsuario = resp;
+            cartasEnJuego[cartaActualIndex].elementoVisual.classList.add('respondida');
+            document.getElementById('modal').style.display = 'none';
+            if (cartasEnJuego.every(c => c.respuestaUsuario !== null))
+                document.getElementById('btn-verificar').style.display = 'block';
+        }
+
+        // =====================================================
+        //  UTILIDADES
+        // =====================================================
         function cambiarPantalla(id) {
             document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
             document.getElementById(id).classList.add('activa');
@@ -452,19 +884,12 @@ Aquí tienes el material de estudio:
                     } else { alert("❌ El archivo no tiene el formato correcto."); }
                 } catch { alert("❌ Error al leer el archivo. ¿Está bien formateado?"); }
             };
-            reader.readAsText(file);
-            e.target.value = '';
+            reader.readAsText(file); e.target.value = '';
         });
 
-        function mostrarTutorial() {
-            document.getElementById('modal-tutorial').classList.add('activo');
-        }
-        function cerrarTutorial() {
-            document.getElementById('modal-tutorial').classList.remove('activo');
-        }
-        document.getElementById('modal-tutorial').addEventListener('click', function(e) {
-            if (e.target === this) cerrarTutorial();
-        });
+        function mostrarTutorial() { document.getElementById('modal-tutorial').classList.add('activo'); }
+        function cerrarTutorial()  { document.getElementById('modal-tutorial').classList.remove('activo'); }
+        document.getElementById('modal-tutorial').addEventListener('click', function(e) { if (e.target === this) cerrarTutorial(); });
 
         function copiarPrompt() {
             const texto = document.getElementById('prompt-copiable').innerText;
@@ -475,51 +900,15 @@ Aquí tienes el material de estudio:
             });
         }
 
-        function abrirSobre() {
-            cambiarPantalla('pantalla-juego');
-            document.getElementById('btn-verificar').style.display = 'none';
-            const cont = document.getElementById('contenedor-cartas');
-            cont.innerHTML = '';
-            cartasEnJuego = [...miMazo].sort(() => Math.random() - 0.5).slice(0, 10);
-
-            cartasEnJuego.forEach((carta, i) => {
-                const div = document.createElement('div');
-                div.className = 'carta';
-                div.innerHTML = '?';
-                div.style.animationDelay = `${i * 0.12}s`;
-                div.onclick = () => {
-                    cartaActualIndex = i;
-                    document.getElementById('modal-pregunta').innerText = carta.pregunta;
-                    document.getElementById('input-respuesta').value = carta.respuestaUsuario || '';
-                    document.getElementById('modal').style.display = 'flex';
-                    setTimeout(() => document.getElementById('input-respuesta').focus(), 100);
-                };
-                carta.elementoVisual = div;
-                carta.respuestaUsuario = null;
-                cont.appendChild(div);
-            });
-        }
-
-        function guardarRespuesta() {
-            const resp = document.getElementById('input-respuesta').value;
-            if (!resp.trim()) return;
-            cartasEnJuego[cartaActualIndex].respuestaUsuario = resp;
-            const div = cartasEnJuego[cartaActualIndex].elementoVisual;
-            div.classList.add('respondida');
-            div.innerHTML = '✓';
-            document.getElementById('modal').style.display = 'none';
-            if (cartasEnJuego.every(c => c.respuestaUsuario !== null)) {
-                document.getElementById('btn-verificar').style.display = 'block';
-            }
-        }
-
+        // =====================================================
+        //  EVALUACIÓN
+        // =====================================================
         async function verificarEnServidor() {
             cambiarPantalla('pantalla-resultados');
             document.getElementById('loading-groq').style.display = 'flex';
             document.getElementById('contenido-resultados').style.display = 'none';
             const listaDiv = document.getElementById('lista-resultados');
-            listaDiv.innerHTML = '';
-            ultimosResultados = [];
+            listaDiv.innerHTML = ''; ultimosResultados = [];
 
             const payload = cartasEnJuego.map(c => ({
                 pregunta: c.pregunta, esperada: c.respuesta, usuario: c.respuestaUsuario, cartaOriginal: c
@@ -527,8 +916,7 @@ Aquí tienes el material de estudio:
 
             try {
                 const response = await fetch('/api/evaluar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ evaluaciones: payload })
                 });
                 const data = await response.json();
@@ -538,7 +926,6 @@ Aquí tienes el material de estudio:
                 data.resultados.forEach(res => {
                     if (res.esCorrecta) correctas++;
                     ultimosResultados.push(res);
-
                     const item = document.createElement('div');
                     item.className = `resultado-item ${res.esCorrecta ? 'correcto' : 'incorrecto'}`;
                     item.innerHTML = `
@@ -552,17 +939,14 @@ Aquí tienes el material de estudio:
                     `;
                     listaDiv.appendChild(item);
                 });
-
                 mostrarPuntuacion(correctas, cartasEnJuego.length);
-
             } catch (error) {
-                listaDiv.innerHTML = `<div class="resultado-item incorrecto">❌ Error al contactar el servidor: ${error.message}<br><br><small style="color:var(--text-muted);">¿Estás usando esto en local sin Vercel? La evaluación con IA requiere el backend desplegado.</small></div>`;
+                listaDiv.innerHTML = `<div class="resultado-item incorrecto">❌ Error: ${error.message}<br><br><small style="color:var(--text-muted);">La evaluación con IA requiere el backend de Vercel.</small></div>`;
                 document.getElementById('titulo-resultado').innerText = "ERROR";
                 document.getElementById('titulo-resultado').style.color = 'var(--danger)';
                 document.getElementById('subtitulo-resultado').innerText = "No se pudo conectar al servidor.";
                 document.getElementById('badge-ronda').innerText = "";
             }
-
             document.getElementById('loading-groq').style.display = 'none';
             document.getElementById('contenido-resultados').style.display = 'block';
         }
@@ -570,184 +954,88 @@ Aquí tienes el material de estudio:
         function mostrarPuntuacion(correctas, total) {
             const titulo = document.getElementById('titulo-resultado');
             const pct = Math.round((correctas / total) * 100);
-            if (correctas === total) {
-                titulo.innerText = "¡PERFECTO! 🎉";
-                titulo.style.color = 'var(--success)';
-            } else if (pct >= 60) {
-                titulo.innerText = "¡BIEN HECHO! 👍";
-                titulo.style.color = 'var(--primary)';
-            } else {
-                titulo.innerText = "A REPASAR 📖";
-                titulo.style.color = 'var(--danger)';
-            }
+            if (correctas === total) { titulo.innerText = "¡PERFECTO! 🎉"; titulo.style.color = 'var(--success)'; }
+            else if (pct >= 60)      { titulo.innerText = "¡BIEN HECHO! 👍"; titulo.style.color = 'var(--primary)'; }
+            else                     { titulo.innerText = "A REPASAR 📖"; titulo.style.color = 'var(--danger)'; }
             document.getElementById('subtitulo-resultado').innerText = `${correctas} de ${total} correctas (${pct}%)`;
             document.getElementById('badge-ronda').innerText = `📊 Ronda completada · ${new Date().toLocaleDateString('es-CL')}`;
         }
 
-        // ======= GENERACIÓN DE PDF =======
+        // =====================================================
+        //  PDF
+        // =====================================================
         function descargarPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-
-            const margen = 18;
-            const anchoUtil = 210 - margen * 2;
+            const margen = 18, anchoUtil = 210 - margen * 2;
             let y = 20;
-            const lineHeight = 6;
+            const amarillo=[255,203,5], azul=[59,76,202], verde=[34,197,94], rojo=[239,68,68];
+            const grisOsc=[22,22,26], grisCard=[30,30,38], grisMed=[50,50,60], grisTxt=[180,180,190], blanco=[240,240,240];
 
-            // ---- Paleta ----
-            const amarillo  = [255, 203,   5];
-            const azul      = [ 59,  76, 202];
-            const verde     = [ 34, 197,  94];
-            const rojo      = [239,  68,  68];
-            const grisOsc   = [ 22,  22,  26];
-            const grisCard  = [ 30,  30,  38];
-            const grisMed   = [ 50,  50,  60];
-            const grisTxt   = [180, 180, 190];
-            const blanco    = [240, 240, 240];
-
-            // --- Fondo oscuro total ---
-            doc.setFillColor(...grisOsc);
-            doc.rect(0, 0, 210, 297, 'F');
-
-            // --- Barra superior decorativa ---
-            doc.setFillColor(...azul);
-            doc.rect(0, 0, 210, 28, 'F');
-            doc.setFillColor(...amarillo);
-            doc.rect(0, 26, 210, 3, 'F');
-
-            // --- Título en barra ---
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(22);
-            doc.setTextColor(...amarillo);
+            doc.setFillColor(...grisOsc); doc.rect(0,0,210,297,'F');
+            doc.setFillColor(...azul);   doc.rect(0,0,210,28,'F');
+            doc.setFillColor(...amarillo); doc.rect(0,26,210,3,'F');
+            doc.setFont('helvetica','bold'); doc.setFontSize(22); doc.setTextColor(...amarillo);
             doc.text('TCG STUDY', margen, 17);
-
-            doc.setFontSize(9);
-            doc.setTextColor(200, 210, 255);
-            doc.text('Reporte de Resultados', margen, 23);
-
-            // --- Fecha top derecha ---
+            doc.setFontSize(9); doc.setTextColor(200,210,255); doc.text('Reporte de Resultados', margen, 23);
             doc.setFontSize(8);
-            doc.setTextColor(200, 210, 255);
-            const fecha = new Date().toLocaleDateString('es-CL', { day:'2-digit', month:'long', year:'numeric' });
-            doc.text(fecha, 210 - margen, 23, { align: 'right' });
-
+            const fecha = new Date().toLocaleDateString('es-CL',{day:'2-digit',month:'long',year:'numeric'});
+            doc.text(fecha, 210-margen, 23, {align:'right'});
             y = 38;
 
-            // --- Resumen de puntaje ---
-            const correctas = ultimosResultados.filter(r => r.esCorrecta).length;
+            const correctas = ultimosResultados.filter(r=>r.esCorrecta).length;
             const total = ultimosResultados.length;
-            const pct = Math.round((correctas / total) * 100);
-
-            doc.setFillColor(...grisCard);
-            doc.roundedRect(margen, y, anchoUtil, 26, 4, 4, 'F');
-            doc.setFillColor(...azul);
-            doc.roundedRect(margen, y, anchoUtil, 26, 4, 4, 'D');
-
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(18);
-            const colorScore = pct === 100 ? verde : (pct >= 60 ? amarillo : rojo);
-            doc.setTextColor(...colorScore);
-            const textoScore = pct === 100 ? '¡PERFECTO! 🎉' : (pct >= 60 ? '¡BIEN HECHO! 👍' : 'A REPASAR 📖');
-            doc.text(textoScore, 105, y + 10, { align: 'center' });
-
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(9);
-            doc.setTextColor(...grisTxt);
-            doc.text(`${correctas} correctas de ${total} · ${pct}% de acierto`, 105, y + 19, { align: 'center' });
-
+            const pct = Math.round((correctas/total)*100);
+            doc.setFillColor(...grisCard); doc.roundedRect(margen,y,anchoUtil,26,4,4,'F');
+            doc.setDrawColor(...azul); doc.roundedRect(margen,y,anchoUtil,26,4,4,'D');
+            doc.setFont('helvetica','bold'); doc.setFontSize(18);
+            doc.setTextColor(...(pct===100?verde:pct>=60?amarillo:rojo));
+            doc.text(pct===100?'¡PERFECTO!':pct>=60?'¡BIEN HECHO!':'A REPASAR', 105, y+10, {align:'center'});
+            doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...grisTxt);
+            doc.text(`${correctas} correctas de ${total} · ${pct}% de acierto`, 105, y+19, {align:'center'});
             y += 34;
 
-            // --- Función auxiliar: texto envuelto ---
             function addWrappedText(txt, x, startY, maxW, size, color, bold) {
-                doc.setFontSize(size);
-                doc.setTextColor(...color);
-                doc.setFont('helvetica', bold ? 'bold' : 'normal');
+                doc.setFontSize(size); doc.setTextColor(...color); doc.setFont('helvetica', bold?'bold':'normal');
                 const lines = doc.splitTextToSize(txt, maxW);
                 doc.text(lines, x, startY);
                 return lines.length * (size * 0.38);
             }
 
-            // --- Sección de errores primero ---
-            const erradas = ultimosResultados.filter(r => !r.esCorrecta);
-            const ok = ultimosResultados.filter(r => r.esCorrecta);
-
             function renderSeccion(lista, esCorrecta) {
-                if (lista.length === 0) return;
-
-                // Título de sección
+                if (!lista.length) return;
                 const colorSec = esCorrecta ? verde : rojo;
-                const labelSec = esCorrecta ? `✔ CORRECTAS (${lista.length})` : `✘ INCORRECTAS — Para repasar (${lista.length})`;
-
-                // Fondo título sección
-                doc.setFillColor(...colorSec);
-                doc.rect(margen, y, anchoUtil, 8, 'F');
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(9);
-                doc.setTextColor(esCorrecta ? 10 : 255, esCorrecta ? 10 : 255, esCorrecta ? 10 : 255);
-                doc.text(labelSec, margen + 4, y + 5.5);
+                doc.setFillColor(...colorSec); doc.rect(margen,y,anchoUtil,8,'F');
+                doc.setFont('helvetica','bold'); doc.setFontSize(9);
+                doc.setTextColor(esCorrecta?10:255, esCorrecta?10:255, esCorrecta?10:255);
+                doc.text(esCorrecta?`CORRECTAS (${lista.length})`:`INCORRECTAS - Para repasar (${lista.length})`, margen+4, y+5.5);
                 y += 12;
-
                 lista.forEach((res, idx) => {
-                    // Estimar altura necesaria
-                    const pregLines = doc.splitTextToSize(res.carta.pregunta, anchoUtil - 12).length;
-                    const respLines = doc.splitTextToSize('Tu respuesta: ' + res.carta.respuestaUsuario, anchoUtil - 12).length;
-                    const esperadaLines = !esCorrecta ? doc.splitTextToSize('Esperada: ' + res.carta.respuesta, anchoUtil - 12).length : 0;
-                    const alturaEstimada = 8 + (pregLines + respLines + esperadaLines) * 4.5 + (esCorrecta ? 0 : 6) + 10;
-
-                    if (y + alturaEstimada > 278) {
-                        doc.addPage();
-                        doc.setFillColor(...grisOsc);
-                        doc.rect(0, 0, 210, 297, 'F');
-                        y = 15;
-                    }
-
-                    // Tarjeta
-                    doc.setFillColor(...grisCard);
-                    doc.roundedRect(margen, y, anchoUtil, alturaEstimada - 4, 3, 3, 'F');
-                    doc.setDrawColor(...(esCorrecta ? verde : rojo));
-                    doc.setLineWidth(0.5);
-                    doc.roundedRect(margen, y, anchoUtil, alturaEstimada - 4, 3, 3, 'D');
-
-                    // Número
-                    doc.setFillColor(...(esCorrecta ? verde : rojo));
-                    doc.circle(margen + 6, y + 6, 3.5, 'F');
-                    doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(7);
-                    doc.setTextColor(10, 10, 10);
-                    doc.text(String(idx + 1), margen + 6, y + 7.5, { align: 'center' });
-
-                    let cy = y + 5;
-
-                    // Pregunta
-                    cy += addWrappedText(res.carta.pregunta, margen + 12, cy, anchoUtil - 14, 9, blanco, true) + 3;
-
-                    // Tu respuesta
-                    cy += addWrappedText('Tu respuesta: ' + res.carta.respuestaUsuario, margen + 12, cy, anchoUtil - 14, 8,
-                        esCorrecta ? verde : rojo, false) + 3;
-
-                    // Respuesta esperada (solo si incorrecto)
-                    if (!esCorrecta) {
-                        cy += addWrappedText('Respuesta esperada: ' + res.carta.respuesta, margen + 12, cy, anchoUtil - 14, 8,
-                            grisTxt, false) + 2;
-                    }
-
-                    y += alturaEstimada;
+                    const pl = doc.splitTextToSize(res.carta.pregunta, anchoUtil-12).length;
+                    const rl = doc.splitTextToSize('Tu respuesta: '+res.carta.respuestaUsuario, anchoUtil-12).length;
+                    const el = !esCorrecta ? doc.splitTextToSize('Esperada: '+res.carta.respuesta, anchoUtil-12).length : 0;
+                    const alt = 8 + (pl+rl+el)*4.5 + (esCorrecta?0:6) + 10;
+                    if (y+alt > 278) { doc.addPage(); doc.setFillColor(...grisOsc); doc.rect(0,0,210,297,'F'); y=15; }
+                    doc.setFillColor(...grisCard); doc.roundedRect(margen,y,anchoUtil,alt-4,3,3,'F');
+                    doc.setDrawColor(...(esCorrecta?verde:rojo)); doc.setLineWidth(0.5);
+                    doc.roundedRect(margen,y,anchoUtil,alt-4,3,3,'D');
+                    doc.setFillColor(...(esCorrecta?verde:rojo)); doc.circle(margen+6,y+6,3.5,'F');
+                    doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(10,10,10);
+                    doc.text(String(idx+1), margen+6, y+7.5, {align:'center'});
+                    let cy = y+5;
+                    cy += addWrappedText(res.carta.pregunta, margen+12, cy, anchoUtil-14, 9, blanco, true)+3;
+                    cy += addWrappedText('Tu respuesta: '+res.carta.respuestaUsuario, margen+12, cy, anchoUtil-14, 8, esCorrecta?verde:rojo, false)+3;
+                    if (!esCorrecta) cy += addWrappedText('Respuesta esperada: '+res.carta.respuesta, margen+12, cy, anchoUtil-14, 8, grisTxt, false)+2;
+                    y += alt;
                 });
-
                 y += 6;
             }
 
-            renderSeccion(erradas, false);
-            renderSeccion(ok, true);
-
-            // --- Pie de página en última hoja ---
-            doc.setFillColor(...grisMed);
-            doc.rect(0, 287, 210, 10, 'F');
-            doc.setFont('helvetica', 'italic');
-            doc.setFontSize(7);
-            doc.setTextColor(...grisTxt);
-            doc.text('Generado por TCG Study · ¡Sigue estudiando!', 105, 293, { align: 'center' });
-
+            renderSeccion(ultimosResultados.filter(r=>!r.esCorrecta), false);
+            renderSeccion(ultimosResultados.filter(r=> r.esCorrecta), true);
+            doc.setFillColor(...grisMed); doc.rect(0,287,210,10,'F');
+            doc.setFont('helvetica','italic'); doc.setFontSize(7); doc.setTextColor(...grisTxt);
+            doc.text('Generado por TCG Study · ¡Sigue estudiando!', 105, 293, {align:'center'});
             doc.save(`tcg-study-resultados-${Date.now()}.pdf`);
         }
 
